@@ -16,6 +16,7 @@ import java.io.IOException
 import android.graphics.drawable.Drawable
 import android.os.Environment
 import com.hazem.popularpeople.R
+import com.hazem.popularpeople.util.downloadFile
 import com.squareup.picasso.Target
 import java.io.File
 import java.lang.Exception
@@ -41,26 +42,11 @@ class ImageFullDisplay : AppCompatActivity() {
         menuInflater.inflate(R.menu.download_image_menu, menu)
         val downLoadImage = menu?.findItem(R.id.downloadBtn)
         downLoadImage?.setOnMenuItemClickListener {
-            Toast.makeText(this, "downloadImage", Toast.LENGTH_SHORT).show()
-            Picasso.get().load("http://image.tmdb.org/t/p/w400${intent.getStringExtra(PERSON_IMAGE_PATH)}")
-                .into(getTarget("${intent.getStringExtra(PERSON_IMAGE_PATH)}"))
+            Toast.makeText(this, "downloadingImage", Toast.LENGTH_SHORT).show()
+            downloadFile(context = this@ImageFullDisplay, url = "http://image.tmdb.org/t/p/w400${intent.getStringExtra(PERSON_IMAGE_PATH)}", fileName = intent.getStringExtra(PERSON_IMAGE_PATH))
             return@setOnMenuItemClickListener true
         }
         return true
-    }
-
-    fun saveFile(context: Context, b: Bitmap, picName: String) {
-        var fos: FileOutputStream? = null
-        try {
-            fos = context.openFileOutput(picName, Context.MODE_PRIVATE)
-            b.compress(Bitmap.CompressFormat.PNG, 100, fos)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            fos?.close()
-        }
     }
 
     //target to save
