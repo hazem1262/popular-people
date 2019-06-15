@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.ui.details
+package com.hazem.popularpeople.screens.details
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,11 +7,11 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import com.hazem.popularpeople.data.PersonImages
+import com.hazem.popularpeople.screens.details.data.PersonImages
 import com.hazem.popularpeople.core.Resource
-import com.hazem.popularpeople.ui.home.PERSON_ID
-import com.hazem.popularpeople.ui.home.PERSON_NAME
-import com.hazem.popularpeople.ui.image.ImageFullDisplay
+import com.hazem.popularpeople.screens.home.PERSON_ID
+import com.hazem.popularpeople.screens.home.PERSON_NAME
+import com.hazem.popularpeople.screens.image.ImageFullDisplay
 import com.hazem.popularpeople.util.calculateNoOfColumns
 import kotlinx.android.synthetic.main.activity_details.*
 import androidx.core.app.ActivityOptionsCompat

@@ -1,11 +1,11 @@
-package com.hazem.popularpeople.ui.details
+package com.hazem.popularpeople.screens.details
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.hazem.popularpeople.data.DetailsApi
-import com.hazem.popularpeople.data.PersonDetails
-import com.hazem.popularpeople.data.PersonImages
+import com.hazem.popularpeople.screens.details.data.DetailsApi
+import com.hazem.popularpeople.screens.details.data.PersonDetails
+import com.hazem.popularpeople.screens.details.data.PersonImages
 import com.hazem.popularpeople.core.Resource
 
 class DetailsViewModel : ViewModel() {

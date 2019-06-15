@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.data
+package com.hazem.popularpeople.screens.details.data
 
 
 import com.google.gson.annotations.SerializedName

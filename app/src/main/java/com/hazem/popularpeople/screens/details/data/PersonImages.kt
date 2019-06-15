@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.data
+package com.hazem.popularpeople.screens.details.data
 
 
 import com.google.gson.annotations.SerializedName
@@ -7,7 +7,7 @@ data class PersonImages(
     @SerializedName("id")
     val id: Int?,
     @SerializedName("profiles")
-    val profiles: List<Profile?>?
+    val profiles: List<Profile>?
 ) {
     data class Profile(
         @SerializedName("aspect_ratio")
@@ -19,7 +19,7 @@ data class PersonImages(
         @SerializedName("iso_639_1")
         val iso6391: Any?,
         @SerializedName("vote_average")
-        val voteAverage: Int?,
+        val voteAverage: Float?,
         @SerializedName("vote_count")
         val voteCount: Int?,
         @SerializedName("width")

@@ -1,12 +1,12 @@
-package com.hazem.popularpeople.ui.details
+package com.hazem.popularpeople.screens.details
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hazem.popularpeople.R
-import com.hazem.popularpeople.data.PersonDetails
-import com.hazem.popularpeople.data.PersonImages
+import com.hazem.popularpeople.screens.details.data.PersonDetails
+import com.hazem.popularpeople.screens.details.data.PersonImages
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.details_image.view.*
 import kotlinx.android.synthetic.main.details_person.view.*
@@ -52,7 +52,7 @@ class DetailsListAdapter(var imageDisplayNavigation:ImageDisplayNavigation) : Re
     }
 
     inner class ImagesViewHolder(var v: View):RecyclerView.ViewHolder(v){
-        fun bindImage(image:PersonImages.Profile){
+        fun bindImage(image: PersonImages.Profile){
             Picasso.get().load("http://image.tmdb.org/t/p/w400${image.filePath}").fit().into(v.detailsImage)
             v.setOnClickListener {
                 imageDisplayNavigation.navigateToDetails(image, v.detailsImage)
