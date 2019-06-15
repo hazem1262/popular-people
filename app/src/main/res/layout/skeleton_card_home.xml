@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:elevation="@dimen/appElevation"
+>
+
+    <!--Icon-->
+    <com.github.abdularis.civ.AvatarImageView
+            android:id="@+id/personImg"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_centerHorizontal="true"
+            app:avatarBackgroundColor="@color/accentSkeleton"
+            app:textColor="@color/accentSkeleton"
+            app:textSize="28sp"
+            android:focusable="false"
+            android:clickable="false"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:scaleType="fitXY"/>
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:gravity="center|start"
+            android:orientation="vertical"
+    >
+
+        <!--Title-->
+        <View
+                android:layout_width="40dp"
+                android:layout_height="16dp"
+                android:background="@color/accentSkeleton"
+        />
+
+        <!--Description-->
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/accentSkeleton"
+        />
+
+        <!--Popularity-->
+        <View
+                android:layout_width="40dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/accentSkeleton"
+        />
+
+        <!--Description-->
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/accentSkeleton"
+        />
+        <!--Known for-->
+        <View
+                android:layout_width="40dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/accentSkeleton"
+        />
+
+        <!--Description-->
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/accentSkeleton"
+        />
+
+    </LinearLayout>
+
+</LinearLayout>

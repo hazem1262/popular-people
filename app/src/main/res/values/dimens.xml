@@ -5,4 +5,5 @@
     <dimen name="app_text_size_medium">18sp</dimen>
     <dimen name="app_text_size_large">22sp</dimen>
     <integer name="animationDuration">500</integer>
+    <dimen name="appElevation">2dp</dimen>
 </resources>

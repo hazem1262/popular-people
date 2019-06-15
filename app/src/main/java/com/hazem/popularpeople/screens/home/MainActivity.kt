@@ -11,10 +11,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.hazem.popularpeople.core.Resource
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.recyclerview.widget.RecyclerView
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.screens.home.data.PopularPersons
 import com.hazem.popularpeople.screens.details.DetailsActivity
 import com.hazem.popularpeople.screens.home.data.DataType
+import com.hazem.popularpeople.util.showSkeleton
 
 const val PERSON_ID   = "personID"
 const val PERSON_NAME = "personName"
@@ -23,18 +25,24 @@ class MainActivity : AppCompatActivity(), DetailsNavigation {
     private var personsAdapter : PopularListAdapter =
         PopularListAdapter(this)
     private lateinit var viewModel: HomeViewModel
-
+    private lateinit var skeleton: RecyclerViewSkeletonScreen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        popularList.adapter = personsAdapter
+
         viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         viewModel.popularPersons?.observe(this, Observer {
+            if (viewModel.networkHelper.currentPage == 2){
+                skeleton.hide()
+                popularList.adapter = personsAdapter
+            }
             if (it?.status == Resource.Status.SUCCESS){
                 personsAdapter.insertPersons(it.data!!)
             }
         })
         viewModel.getPopularPersons()
+        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+
         popularList.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
