@@ -3,20 +3,21 @@ package com.hazem.popularpeople.screens.details
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.hazem.popularpeople.screens.details.data.DetailsApi
 import com.hazem.popularpeople.screens.details.data.PersonDetails
 import com.hazem.popularpeople.screens.details.data.PersonImages
 import com.hazem.popularpeople.core.Resource
+import com.hazem.popularpeople.screens.details.data.DetailsRepository
 
 class DetailsViewModel : ViewModel() {
     var images: MediatorLiveData<Resource<PersonImages>> = MediatorLiveData()
     var header: MediatorLiveData<Resource<PersonDetails>> = MediatorLiveData()
     var detailsList : MutableList<Any> = arrayListOf()
-
+    var isRequestSend = false  // to handle if configuration changed while request was send before
     fun getPersonDetails(personId:Int){
-        if (detailsList.isNullOrEmpty()){
+        // check to not send requests after configuration change
+        if (detailsList.isNullOrEmpty() && !isRequestSend){
             val detailsObserver =
-                Observer<Resource<PersonDetails>> { it ->
+                Observer<Resource<PersonDetails>> {
                     if (it != null){
                         detailsList.add(0, it.data!!)
                     }
@@ -24,15 +25,15 @@ class DetailsViewModel : ViewModel() {
                         Resource.success(it.data)
                     )
                 }
-            images.addSource(DetailsApi().getPersonImages(personId)){
+            images.addSource(detailsRepository.getPersonImages(personId)){
                 if (it != null){
                     images.postValue(Resource.success(it.data))
                     detailsList.addAll(it.data?.profiles?: arrayListOf())
-                    header.addSource(DetailsApi().getPersonDetails(personId), detailsObserver)
+                    header.addSource(detailsRepository.getPersonDetails(personId), detailsObserver)
                 }
             }
         }
-
-
     }
+
+    private val detailsRepository by lazy { DetailsRepository() }
 }

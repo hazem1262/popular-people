@@ -10,8 +10,7 @@ class HomeRepository {
 
     fun searchPopularPersons(page:Int, searchQuery:String) : MutableLiveData<Resource<PopularPersons>>
             = homeApi.searchPopularPersons(page = page, searchQuery = searchQuery)
-companion object{
 
-private val homeApi by lazy { HomeApiProvider() }
-}
+    private val homeApi by lazy { HomeApiProvider() }
+
 }
