@@ -1,11 +1,11 @@
-package com.hazem.popularpeople.ui.image
+package com.hazem.popularpeople.screens.image
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
-import com.hazem.popularpeople.ui.details.PERSON_IMAGE_PATH
-import com.hazem.popularpeople.ui.home.PERSON_NAME
+import com.hazem.popularpeople.screens.details.PERSON_IMAGE_PATH
+import com.hazem.popularpeople.screens.home.PERSON_NAME
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_image_full_display.*
 import android.graphics.Bitmap
