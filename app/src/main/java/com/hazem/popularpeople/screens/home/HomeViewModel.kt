@@ -71,9 +71,11 @@ class HomeViewModel : ViewModel() {
         // do not reset the observable if there is no search done [user click search icon the click back]
         if (dataType == DataType.Search || (dataType == DataType.Browse && apiHelper.isSearchStarted || forceReset)){
             apiHelper.currentPage = 1
+            apiHelper.totalPages = 10
             apiHelper.searchQuery = searchQuery?:""
             popularPersons.value = Resource.success(arrayListOf())
             apiHelper.dataType = dataType
+            apiHelper.isSearchStarted = false
             getData()
         }
     }
