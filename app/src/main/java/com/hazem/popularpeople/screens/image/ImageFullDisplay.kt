@@ -11,7 +11,10 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_image_full_display.*
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.BaseActivity
+import com.hazem.popularpeople.screens.details.IMAGE_HEIGHT
+import com.hazem.popularpeople.screens.details.IMAGE_WIDTH
 import com.hazem.popularpeople.util.downloadFile
+import com.hazem.popularpeople.util.getOriginalImageUrl
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -27,8 +30,10 @@ class ImageFullDisplay : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_full_display)
         title = intent.getStringExtra(PERSON_NAME)
-
-        Picasso.get().load("http://image.tmdb.org/t/p/w400${intent.getStringExtra(PERSON_IMAGE_PATH)}").fit().into(imageFullDisplay)
+        
+        Picasso.get().load(intent.getStringExtra(PERSON_IMAGE_PATH).getOriginalImageUrl())
+            .resize(intent.getIntExtra(IMAGE_WIDTH,0), intent.getIntExtra(IMAGE_HEIGHT,0))
+            .into(imageFullDisplay)
     }
 
 

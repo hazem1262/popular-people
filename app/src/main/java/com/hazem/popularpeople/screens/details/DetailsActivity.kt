@@ -22,6 +22,8 @@ import com.hazem.popularpeople.util.showSkeleton
 
 
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"
+const val IMAGE_WIDTH       = "IMAGE_WIDTH"
+const val IMAGE_HEIGHT      = "IMAGE_HEIGHT"
 class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
 
     private lateinit var viewModel: DetailsViewModel
@@ -78,6 +80,8 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
     override fun navigateToDetails(profile: PersonImages.Profile, imageView : View) {
         val intent = Intent(this, ImageFullDisplay::class.java).apply {
             putExtra(PERSON_IMAGE_PATH, profile.filePath)
+            putExtra(IMAGE_WIDTH, profile.width)
+            putExtra(IMAGE_HEIGHT, profile.height)
             putExtra(PERSON_NAME, intent.getStringExtra(PERSON_NAME))
         }
         // handle shared element transition

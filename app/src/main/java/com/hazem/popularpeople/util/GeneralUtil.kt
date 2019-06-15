@@ -8,3 +8,6 @@ fun calculateNoOfColumns(context: Context, columnWidthDp: Float): Int { // For e
     val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
     return (screenWidthDp / columnWidthDp + 0.5).toInt()
 }
+
+fun String.getImageUrl(): String = "http://image.tmdb.org/t/p/w185$this"
+fun String.getOriginalImageUrl(): String = "http://image.tmdb.org/t/p/original$this"

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.abdularis.civ.AvatarImageView
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.screens.home.data.PopularPersons
+import com.hazem.popularpeople.util.getImageUrl
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_person.view.*
 
@@ -35,7 +36,7 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
             // load person image
             if (!person.profilePath.isNullOrEmpty()){
                 v.personImg.state = AvatarImageView.SHOW_IMAGE
-                Picasso.get().load("http://image.tmdb.org/t/p/w400${person.profilePath}").fit().into(v.personImg)
+                Picasso.get().load(person.profilePath.getImageUrl()).fit().into(v.personImg)
             }else{
                 v.personImg.state = AvatarImageView.SHOW_INITIAL
                 v.personImg.setText(person.name)
