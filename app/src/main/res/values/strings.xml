@@ -4,4 +4,5 @@
     <string name="personPopularity">popularity</string>
     <string name="knownFor">KnownFor</string>
     <string name="imageTransition">imageTransition</string>
+    <string name="storagePermission">storage permission required to save image!</string>
 </resources>

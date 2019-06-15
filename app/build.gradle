@@ -6,6 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
+    // https://stackoverflow.com/questions/49512629/default-interface-methods-are-only-supported-starting-with-android-n
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8  // <= add this
         targetCompatibility JavaVersion.VERSION_1_8  // <= add this
@@ -37,14 +38,20 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
     implementation rootProject.ext.libraries.recyclerView
+    // networking
     implementation rootProject.ext.libraries.retrofit
     implementation rootProject.ext.libraries.retrofitConverter
     implementation rootProject.ext.libraries.retrofitAdapter
     implementation rootProject.ext.libraries.scalableDP
     implementation rootProject.ext.libraries.cardView
+    // rounded image
     implementation rootProject.ext.libraries.circleImageView
-    // picasso
+    // images
     implementation rootProject.ext.libraries.picasso
+    // loading
     implementation rootProject.ext.libraries.shimmer
     implementation rootProject.ext.libraries.skeleton
+
+    // permissions
+    implementation rootProject.ext.libraries.dexter
 }

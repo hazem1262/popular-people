@@ -1,5 +1,6 @@
 package com.hazem.popularpeople.screens.image
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -17,6 +18,12 @@ import android.graphics.drawable.Drawable
 import android.os.Environment
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.util.downloadFile
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import com.squareup.picasso.Target
 import java.io.File
 import java.lang.Exception
@@ -42,38 +49,28 @@ class ImageFullDisplay : AppCompatActivity() {
         menuInflater.inflate(R.menu.download_image_menu, menu)
         val downLoadImage = menu?.findItem(R.id.downloadBtn)
         downLoadImage?.setOnMenuItemClickListener {
-            Toast.makeText(this, "downloadingImage", Toast.LENGTH_SHORT).show()
-            downloadFile(context = this@ImageFullDisplay, url = "http://image.tmdb.org/t/p/w400${intent.getStringExtra(PERSON_IMAGE_PATH)}", fileName = intent.getStringExtra(PERSON_IMAGE_PATH))
+            downLoadImage()
             return@setOnMenuItemClickListener true
         }
         return true
     }
+    private fun downLoadImage(){
+        Dexter.withActivity(this)
+            .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse?) {
+                    Toast.makeText(this@ImageFullDisplay, "downloadingImage", Toast.LENGTH_SHORT).show()
+                    downloadFile(context = this@ImageFullDisplay, url = "http://image.tmdb.org/t/p/w400${intent.getStringExtra(PERSON_IMAGE_PATH)}", fileName = intent.getStringExtra(PERSON_IMAGE_PATH))
+                }
 
-    //target to save
-    private fun getTarget(url: String): Target {
-        return object : Target {
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+                override fun onPermissionDenied(response: PermissionDeniedResponse?) {
+                    Toast.makeText(this@ImageFullDisplay, resources.getString(R.string.storagePermission), Toast.LENGTH_SHORT).show()
+                }
 
-            }
+                override fun onPermissionRationaleShouldBeShown(permissions: PermissionRequest?, token: PermissionToken?) {
+                    token?.continuePermissionRequest()
+                }
 
-            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
-                Thread(Runnable {
-                    val file = File(Environment.getExternalStorageDirectory().path  + url)
-                    try {
-                        file.createNewFile()
-                        val ostream = FileOutputStream(file)
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream)
-                        ostream.flush()
-                        ostream.close()
-                    } catch (e: IOException) {
-                    }
-                }).start()
-
-            }
-
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-
-            }
-        }
+            }).check()
     }
 }

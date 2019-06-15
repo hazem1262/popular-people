@@ -6,6 +6,7 @@ ext{
     picassoVersion         = "2.71828"
     skeletonVersion        = "1.1.0"     // Skeleton - version 1.1.1 has a bug with the width of the recycler view skeleton item!
     shimmerVersion         = "2.0.0"       // version 2.1.0 has a bug with the width of the recycler view skeleton item!
+    dexter                 = "5.0.0"
     libraries = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
             retrofitConverter : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
@@ -16,7 +17,8 @@ ext{
             circleImageView   : "com.github.abdularis:circularimageview:${circleImageViewVersion}",
             picasso           : "com.squareup.picasso:picasso:${picassoVersion}",
             skeleton          : "com.ethanhua:skeleton:${skeletonVersion}",
-            shimmer           : "io.supercharge:shimmerlayout:${shimmerVersion}"
+            shimmer           : "io.supercharge:shimmerlayout:${shimmerVersion}",
+            dexter            : "com.karumi:dexter:${dexter}"
 
 
     ]
