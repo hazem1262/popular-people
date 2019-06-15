@@ -15,8 +15,10 @@ import com.hazem.popularpeople.screens.image.ImageFullDisplay
 import com.hazem.popularpeople.util.calculateNoOfColumns
 import kotlinx.android.synthetic.main.activity_details.*
 import androidx.core.app.ActivityOptionsCompat
+import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
-
+import com.hazem.popularpeople.util.showSkeleton
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"
@@ -24,6 +26,8 @@ class DetailsActivity : AppCompatActivity(), ImageDisplayNavigation {
 
     private lateinit var viewModel: DetailsViewModel
     private var detailsAdapter = DetailsListAdapter(this)
+    private lateinit var skeleton: RecyclerViewSkeletonScreen
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
@@ -32,12 +36,14 @@ class DetailsActivity : AppCompatActivity(), ImageDisplayNavigation {
         viewModel.images.observe(this, Observer {} )
         viewModel.header.observe(this, Observer {
             if (it?.status ==  Resource.Status.SUCCESS){
+                skeleton.hide()
+                detailsList.adapter = detailsAdapter
                 detailsAdapter.insertDetails(viewModel.detailsList)
             }
         })
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        detailsList.adapter = detailsAdapter
+
         val layoutManager = GridLayoutManager(this,calculateNoOfColumns(this, 170f))
         layoutManager.spanSizeLookup = object :GridLayoutManager.SpanSizeLookup(){
             override fun getSpanSize(position: Int): Int {
@@ -51,6 +57,8 @@ class DetailsActivity : AppCompatActivity(), ImageDisplayNavigation {
         }
         detailsList.layoutManager = layoutManager
         viewModel.getPersonDetails(intent.getIntExtra(PERSON_ID, 0))
+        skeleton = detailsList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
