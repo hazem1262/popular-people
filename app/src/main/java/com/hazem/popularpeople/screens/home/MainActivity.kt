@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.ui.home
+package com.hazem.popularpeople.screens.home
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +12,10 @@ import com.hazem.popularpeople.core.Resource
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.recyclerview.widget.RecyclerView
 import com.hazem.popularpeople.R
-import com.hazem.popularpeople.data.PopularPersons
-import com.hazem.popularpeople.ui.details.DetailsActivity
+import com.hazem.popularpeople.screens.home.data.PopularPersons
+import com.hazem.popularpeople.screens.details.DetailsActivity
+import com.hazem.popularpeople.screens.home.data.DataType
+
 const val PERSON_ID   = "personID"
 const val PERSON_NAME = "personName"
 class MainActivity : AppCompatActivity(), DetailsNavigation {
@@ -45,6 +47,11 @@ class MainActivity : AppCompatActivity(), DetailsNavigation {
             }
         )
 
+        // load search query after configuration change
+        if(viewModel.networkHelper.searchQuery.isNotEmpty()){
+            invalidateOptionsMenu()
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -55,6 +62,7 @@ class MainActivity : AppCompatActivity(), DetailsNavigation {
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(query: String?): Boolean {
+                    viewModel.resetObservable(dataType = DataType.Search, searchQuery = query)
                     viewModel.getData()
                     return false
                 }
@@ -72,12 +80,11 @@ class MainActivity : AppCompatActivity(), DetailsNavigation {
         searchItem.setOnActionExpandListener(
             object : MenuItem.OnActionExpandListener{
                 override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                    viewModel.resetObservable(dataType = HomeViewModel.DataType.Search)
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                    viewModel.resetObservable(dataType = HomeViewModel.DataType.Browse)
+                    viewModel.resetObservable(dataType = DataType.Browse)
                     return true
                 }
 
