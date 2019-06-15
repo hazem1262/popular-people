@@ -5,4 +5,9 @@
       android:title="search"
       app:showAsAction="ifRoom|collapseActionView"
       app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item android:id="@+id/starItem"
+          android:icon="@drawable/ic_star"
+          android:title="search"
+          app:showAsAction="ifRoom|collapseActionView"
+          />
 </menu>

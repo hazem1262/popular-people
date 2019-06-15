@@ -59,7 +59,8 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
     @SuppressLint("ResourceType")
     private fun getData(){
         viewModel.getPersonDetails(intent.getIntExtra(PERSON_ID, 0))
-        skeleton = detailsList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+        skeleton = detailsList.showSkeleton(R.layout.skeleton_card_details, R.color.white, 10)
+        skeleton.show()
     }
 
     private fun attachLayoutManager(){

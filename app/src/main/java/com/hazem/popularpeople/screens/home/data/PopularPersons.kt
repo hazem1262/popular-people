@@ -15,15 +15,15 @@ data class PopularPersons(
 ) {
     data class PopularPerson(
         @SerializedName("adult")
-        val adult: Boolean?,
+        val adult: Boolean? = null,
         @SerializedName("id")
         val id: Int?,
         @SerializedName("known_for")
-        val knownFor: List<KnownFor?>?,
+        val knownFor: List<KnownFor?>? = null,
         @SerializedName("name")
-        val name: String?,
+        val name: String? ,
         @SerializedName("popularity")
-        val popularity: Double?,
+        val popularity: Double? = null,
         @SerializedName("profile_path")
         val profilePath: String?
     ) {

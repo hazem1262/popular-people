@@ -19,8 +19,9 @@ import com.hazem.popularpeople.screens.details.DetailsActivity
 import com.hazem.popularpeople.screens.home.data.DataType
 import com.hazem.popularpeople.util.showSkeleton
 
-const val PERSON_ID   = "personID"
-const val PERSON_NAME = "personName"
+const val PERSON_ID    = "personID"
+const val PERSON_NAME  = "personName"
+const val FROM_STARRED = "FROM_STARRED"
 class MainActivity : BaseActivity(), DetailsNavigation{
 
     private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
@@ -41,83 +42,106 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         // listen to scroll event and send new request when no scroll available
         handleInfiniteResults()
 
-        // hide the back btn in the tool bar
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        // hide the back btn in the tool bar if not in stars screen
+        if (!intent.getBooleanExtra(FROM_STARRED, false)){
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        }
 
     }
 
     private fun handleInfiniteResults() {
-        popularList.addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    // detect if cannot scroll vertically
-                    if (!recyclerView.canScrollVertically(1) && !viewModel.isScrollingBlocked) {
-                        viewModel.isScrollingBlocked = true
-                        viewModel.getData()
+        if (!intent.getBooleanExtra(FROM_STARRED, false)){
+            popularList.addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        // detect if cannot scroll vertically
+                        if (!recyclerView.canScrollVertically(1) && !viewModel.isScrollingBlocked) {
+                            viewModel.isScrollingBlocked = true
+                            viewModel.getData()
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 
     @SuppressLint("ResourceType")
     private fun getData() {
-        viewModel.getData()
         // start loading
         skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+        skeleton.show()
+        viewModel.getData(intent.getBooleanExtra(FROM_STARRED, false))
     }
 
     private fun registerObservers() {
         viewModel.popularPersons?.observe(this, Observer {
-            if (viewModel.apiHelper.currentPage <= 2){
+            if (viewModel.apiHelper.currentPage <= 2 && it.data?.size?:0 > 0){
                 skeleton.hide()
                 viewModel.apiHelper.isLoading = false
                 popularList.adapter = personsAdapter
             }
-            if (it?.status == Resource.Status.SUCCESS){
+            if (it?.status == Resource.Status.SUCCESS ){
+
                 personsAdapter.insertPersons(it.data!!)
             }
         })
+        if(intent.getBooleanExtra(FROM_STARRED, false)){
+            viewModel.topRatedMovies.observe(this, Observer {  })
+            viewModel.topRatedMovieCast.observe(this, Observer {  })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.popular_search_menu, menu)
+//        do not show menu items in starred screen
+        if (!intent.getBooleanExtra(FROM_STARRED, false)){
+            menuInflater.inflate(R.menu.popular_search_menu, menu)
 
-        val searchItem = menu?.findItem(R.id.actionSearch)
-        val searchView = searchItem?.actionView as SearchView
-        searchView.setOnQueryTextListener(
-            object : SearchView.OnQueryTextListener{
-
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    viewModel.resetObservable(dataType = DataType.Search, searchQuery = query)
-                    viewModel.getData()
-                    return false
+            val starItem = menu?.findItem(R.id.starItem)
+            starItem?.setOnMenuItemClickListener {
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    putExtra(FROM_STARRED, true)
                 }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    if (newText?.isNotEmpty() == true){
-                        viewModel.updateSearchQuery(newText)
+                startActivity(intent)
+                return@setOnMenuItemClickListener true
+            }
+            val searchItem = menu?.findItem(R.id.actionSearch)
+            val searchView = searchItem?.actionView as SearchView
+            searchView.setOnQueryTextListener(
+                object : SearchView.OnQueryTextListener{
+
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        viewModel.resetObservable(dataType = DataType.Search, searchQuery = query)
+                        viewModel.getData()
+                        return false
                     }
-                    return false
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        if (newText?.isNotEmpty() == true){
+                            viewModel.updateSearchQuery(newText)
+                        }
+                        return false
+                    }
+
                 }
+            )
 
-            }
-        )
+            searchItem.setOnActionExpandListener(
+                object : MenuItem.OnActionExpandListener{
+                    override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                        return true
+                    }
 
-        searchItem.setOnActionExpandListener(
-            object : MenuItem.OnActionExpandListener{
-                override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                    return true
+                    override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                        viewModel.resetObservable(dataType = DataType.Browse)
+                        return true
+                    }
+
                 }
+            )
+        }
 
-                override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                    viewModel.resetObservable(dataType = DataType.Browse)
-                    return true
-                }
-
-            }
-        )
         return true
     }
 
@@ -130,8 +154,12 @@ class MainActivity : BaseActivity(), DetailsNavigation{
     }
     override fun onNetworkConnectionChanged(isConnected: Boolean){
         super.onNetworkConnectionChanged(isConnected)
-        if (isConnected && viewModel.apiHelper.isLoading){
+        if (isConnected && viewModel.apiHelper.isLoading && viewModel.apiHelper.networkChanged){
             viewModel.resetObservable(DataType.Browse, forceReset = true)
+        }
+        // make sure network changed from not connected to connected
+        if (!isConnected){
+            viewModel.apiHelper.networkChanged = !isConnected
         }
         viewModel.isScrollingBlocked = false
     }

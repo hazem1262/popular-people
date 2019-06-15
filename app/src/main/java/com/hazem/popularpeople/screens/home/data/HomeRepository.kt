@@ -11,6 +11,12 @@ class HomeRepository {
     fun searchPopularPersons(page:Int, searchQuery:String) : MutableLiveData<Resource<PopularPersons>>
             = homeApi.searchPopularPersons(page = page, searchQuery = searchQuery)
 
+    fun getMovieCast(movieId:String): MutableLiveData<Resource<CastingResponse>>
+            = homeApi.getMovieCast(movieId)
+
+    fun getTopRatedMovies() : MutableLiveData<Resource<MovesResponse>>
+            = homeApi.getTopRatedMovies()
+
     private val homeApi by lazy { HomeApiProvider() }
 
 }

@@ -20,7 +20,8 @@
         <activity android:name=".core.BaseActivity">
         </activity>
         <!-- https://stackoverflow.com/questions/53139689/picasso-image-loading-issue-with-android-9-0-pie -->
-        <activity android:name=".screens.image.ImageFullDisplay">
+        <activity android:name=".screens.image.ImageFullDisplay"
+                  android:screenOrientation="portrait">
         </activity>
         <activity android:name=".screens.details.DetailsActivity">
         </activity>

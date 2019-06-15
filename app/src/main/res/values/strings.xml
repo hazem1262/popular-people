@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Popular People</string>
-    <string name="personName">name</string>
-    <string name="personPopularity">popularity</string>
-    <string name="knownFor">KnownFor</string>
+    <string name="personName">Name</string>
+    <string name="personPopularity">Popularity</string>
+    <string name="knownFor">Known For</string>
     <string name="imageTransition">imageTransition</string>
     <string name="storagePermission">storage permission required to save image!</string>
     <string name="app_internet_error">please make sure there is internet connection</string>

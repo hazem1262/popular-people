@@ -42,16 +42,27 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
                 v.personImg.setText(person.name)
             }
             v.personName.text       = person.name
-            v.personPopularity.text = person.popularity.toString()
-            var knownFor = ""
-            person.knownFor?.forEach {
-                knownFor += if (it?.originalTitle != null){
-                    "${it?.originalTitle}, "
-                }else {
-                    "${it?.originalName}, "
-                }
+            if (person.popularity == null){
+                v.personPopularityHeader.visibility = View.GONE
+                v.personPopularity.visibility       = View.GONE
+            }else{
+                v.personPopularity.text = person.popularity.toString()
             }
-            v.personKnownFor.text = knownFor
+            if (person.knownFor.isNullOrEmpty()){
+                v.personKnownFor.visibility       = View.GONE
+                v.personKnownForHeader.visibility = View.GONE
+
+            }else{
+                var knownFor = ""
+                person.knownFor?.forEach {
+                    knownFor += if (it?.originalTitle != null){
+                        "${it?.originalTitle}, "
+                    }else {
+                        "${it?.originalName}, "
+                    }
+                }
+                v.personKnownFor.text = knownFor
+            }
 
             v.setOnClickListener { detailsNavigation.navigateToDetails(person) }
             v.personImg.setOnClickListener { detailsNavigation.navigateToDetails(person) }
