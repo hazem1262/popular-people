@@ -10,7 +10,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.lang.Exception
 
-class DetailsApi {
+class DetailsApiProvider {
 
     fun getPersonImages(personId:Int) : MutableLiveData<Resource<PersonImages>> {
         val data = MutableLiveData<Resource<PersonImages>>()
