@@ -45,6 +45,7 @@ class HomeApiProvider {
         )
         return data
     }
+
     interface RetrofitInterface{
         @GET(ApiEndPoints.POPULAR_PERSONS)
         fun getPopularPersons(

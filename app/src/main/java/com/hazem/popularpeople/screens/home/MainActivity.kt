@@ -1,9 +1,7 @@
 package com.hazem.popularpeople.screens.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -25,48 +23,62 @@ const val PERSON_ID   = "personID"
 const val PERSON_NAME = "personName"
 class MainActivity : BaseActivity(), DetailsNavigation{
 
-    private var personsAdapter : PopularListAdapter =
-        PopularListAdapter(this)
+    private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
     private lateinit var viewModel: HomeViewModel
     private lateinit var skeleton: RecyclerViewSkeletonScreen
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
+        // initialize the viewModel
         viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        // observe to the result from search or list data
+        registerObservers()
+
+        getData()
+
+        // listen to scroll event and send new request when no scroll available
+        handleInfiniteResults()
+
+        // hide the back btn in the tool bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
+    }
+
+    private fun handleInfiniteResults() {
+        popularList.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // detect if cannot scroll vertically
+                    if (!recyclerView.canScrollVertically(1) && !viewModel.isScrollingBlocked) {
+                        viewModel.isScrollingBlocked = true
+                        viewModel.getData()
+                    }
+                }
+            }
+        )
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getData() {
+        viewModel.getData()
+        // start loading
+        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+    }
+
+    private fun registerObservers() {
         viewModel.popularPersons?.observe(this, Observer {
-            if (viewModel.networkHelper.currentPage <= 2){
+            if (viewModel.apiHelper.currentPage <= 2){
                 skeleton.hide()
+                viewModel.apiHelper.isLoading = false
                 popularList.adapter = personsAdapter
             }
             if (it?.status == Resource.Status.SUCCESS){
                 personsAdapter.insertPersons(it.data!!)
             }
         })
-        viewModel.getPopularPersons()
-        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
-
-        popularList.addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-
-                    if (!recyclerView.canScrollVertically(1)) {
-                        viewModel.getData()
-                    }
-                }
-            }
-        )
-
-        // load search query after configuration change
-        if(viewModel.networkHelper.searchQuery.isNotEmpty()){
-            invalidateOptionsMenu()
-        }
-
-        // hide the back btn in the tool bar
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -76,6 +88,7 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         val searchView = searchItem?.actionView as SearchView
         searchView.setOnQueryTextListener(
             object : SearchView.OnQueryTextListener{
+
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     viewModel.resetObservable(dataType = DataType.Search, searchQuery = query)
                     viewModel.getData()
@@ -114,5 +127,12 @@ class MainActivity : BaseActivity(), DetailsNavigation{
             putExtra(PERSON_NAME, person.name)
         }
         startActivity(intent)
+    }
+    override fun onNetworkConnectionChanged(isConnected: Boolean){
+        super.onNetworkConnectionChanged(isConnected)
+        if (isConnected && viewModel.apiHelper.isLoading){
+            viewModel.resetObservable(DataType.Browse, forceReset = true)
+        }
+        viewModel.isScrollingBlocked = false
     }
 }

@@ -23,9 +23,7 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
         return PopularPersonsViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return persons.size
-    }
+    override fun getItemCount(): Int  = persons.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as PopularPersonsViewHolder).bindPerson(persons[position])
@@ -34,7 +32,7 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
     inner class PopularPersonsViewHolder(var v:View):RecyclerView.ViewHolder(v){
         fun bindPerson(person: PopularPersons.PopularPerson){
 
-            // load person data
+            // load person image
             if (!person.profilePath.isNullOrEmpty()){
                 v.personImg.state = AvatarImageView.SHOW_IMAGE
                 Picasso.get().load("http://image.tmdb.org/t/p/w400${person.profilePath}").fit().into(v.personImg)
@@ -54,9 +52,8 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
             }
             v.personKnownFor.text = knownFor
 
-            v.setOnClickListener {
-                detailsNavigation.navigateToDetails(person)
-            }
+            v.setOnClickListener { detailsNavigation.navigateToDetails(person) }
+            v.personImg.setOnClickListener { detailsNavigation.navigateToDetails(person) }
         }
     }
 }

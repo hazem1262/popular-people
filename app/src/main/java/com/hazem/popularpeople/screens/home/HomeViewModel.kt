@@ -9,11 +9,29 @@ import com.hazem.popularpeople.screens.home.data.HomeRepository
 import com.hazem.popularpeople.screens.home.data.NetworkHelper
 
 class HomeViewModel : ViewModel() {
-    var networkHelper = NetworkHelper()
+    // save the request state [currentPage - totalPages - searchQuery ...]
+    var apiHelper = NetworkHelper()
+    // popular persons live data will be used to handle listing and searching for people
     var popularPersons : MediatorLiveData<Resource<MutableList<PopularPersons.PopularPerson>>> = MediatorLiveData()
-    fun getPopularPersons(){
-        popularPersons.addSource(homeRepository.getPopularPersons(networkHelper.currentPage++)){
+    // to prevent scrolling events from sending multiple requests
+    var isScrollingBlocked : Boolean = false
+    fun getData() {
+        // check if there is more data to load
+        if (apiHelper.currentPage < apiHelper.totalPages){
+            if (apiHelper.dataType == DataType.Browse){
+                getPopularPersons()
+            }else if (apiHelper.dataType == DataType.Search){
+                searchPopularPersons()
+            }
+        }
+    }
+
+    private fun getPopularPersons(){
+        popularPersons.addSource(homeRepository.getPopularPersons(apiHelper.currentPage++)){
             if (it != null){
+                isScrollingBlocked = false
+                // set the total number of pages
+                apiHelper.totalPages = it.data?.totalPages?:0
                 var oldData = popularPersons.value?.data
                 oldData?.addAll(it.data?.results!!)
             popularPersons.postValue(Resource.success(oldData?:it.data?.results!!))
@@ -22,13 +40,16 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun searchPopularPersons(){
-        if (networkHelper.searchQuery.isNotEmpty()){
-            networkHelper.isSearchStarted = true
-            popularPersons.addSource(homeRepository.searchPopularPersons(networkHelper.currentPage++, networkHelper.searchQuery)){
+        if (apiHelper.searchQuery.isNotEmpty()){
+            apiHelper.isSearchStarted = true
+            popularPersons.addSource(homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery)){
                 if (it != null){
+                    isScrollingBlocked = false
                     var oldData = popularPersons.value?.data
+                    // set the total number of pages
+                    apiHelper.totalPages = it.data?.totalPages?:0
                     oldData?.addAll(it.data?.results!!)
-                    val toBeSendData = if (oldData == null || networkHelper.currentPage == 2){
+                    val toBeSendData = if (oldData == null || apiHelper.currentPage == 2){
                         it.data?.results!!
                     }else{
                         oldData
@@ -40,31 +61,24 @@ class HomeViewModel : ViewModel() {
     }
 
     fun updateSearchQuery(newSearchQuery:String){
-        networkHelper.searchQuery = newSearchQuery
+        apiHelper.searchQuery = newSearchQuery
         //reset teh current page
-        networkHelper.currentPage = 1
+        apiHelper.currentPage = 1
     }
-    fun resetObservable(dataType : DataType, searchQuery:String? = ""){
-        if (dataType == DataType.Search || (dataType == DataType.Browse && networkHelper.isSearchStarted)){
-            networkHelper.currentPage = 1
-            networkHelper.searchQuery = searchQuery?:""
+
+    // reset the observable after changing the state [search - browse]
+    fun resetObservable(dataType : DataType, searchQuery:String? = "", forceReset:Boolean = false){
+        // do not reset the observable if there is no search done [user click search icon the click back]
+        if (dataType == DataType.Search || (dataType == DataType.Browse && apiHelper.isSearchStarted || forceReset)){
+            apiHelper.currentPage = 1
+            apiHelper.searchQuery = searchQuery?:""
             popularPersons.value = Resource.success(arrayListOf())
-            networkHelper.dataType = dataType
+            apiHelper.dataType = dataType
             getData()
         }
     }
 
-    fun getData() {
 
-        // check if there is more data to load
-        if (networkHelper.currentPage < networkHelper.totalPages){
-            if (networkHelper.dataType == DataType.Browse){
-                getPopularPersons()
-            }else if (networkHelper.dataType == DataType.Search){
-                searchPopularPersons()
-            }
-        }
-    }
 private val homeRepository by lazy { HomeRepository() }
 
 }
