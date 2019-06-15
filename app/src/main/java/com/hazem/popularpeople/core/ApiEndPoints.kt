@@ -17,3 +17,4 @@ object ApiQueryParams {
 object ApiPaths{
     const val PERSON_ID    = "person_id"
 }
+const val API_KEY_VALUE = "96eee189d8f440bae690d17f36e9f700"

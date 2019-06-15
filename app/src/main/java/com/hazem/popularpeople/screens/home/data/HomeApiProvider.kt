@@ -15,7 +15,7 @@ class HomeApiProvider {
 
     fun getPopularPersons(page:Int) : MutableLiveData<Resource<PopularPersons>> {
         val data = MutableLiveData<Resource<PopularPersons>>()
-        api.getPopularPersons(apiKey = "96eee189d8f440bae690d17f36e9f700", page = page.toString()).enqueue(
+        api.getPopularPersons(page = page.toString()).enqueue(
             object :Callback<PopularPersons>{
                 override fun onFailure(call: Call<PopularPersons>, t: Throwable) {
 
@@ -31,7 +31,7 @@ class HomeApiProvider {
     }
     fun searchPopularPersons(page:Int, searchQuery:String) : MutableLiveData<Resource<PopularPersons>> {
         val data = MutableLiveData<Resource<PopularPersons>>()
-        api.searchPopularPersons(apiKey = "96eee189d8f440bae690d17f36e9f700", page = page.toString(), searchQuery = searchQuery).enqueue(
+        api.searchPopularPersons( page = page.toString(), searchQuery = searchQuery).enqueue(
             object : Callback<PopularPersons> {
                 override fun onFailure(call: Call<PopularPersons>, t: Throwable) {
 
@@ -48,13 +48,11 @@ class HomeApiProvider {
     interface RetrofitInterface{
         @GET(ApiEndPoints.POPULAR_PERSONS)
         fun getPopularPersons(
-            @Query(ApiQueryParams.API_KEY) apiKey:String,
             @Query(ApiQueryParams.PAGE) page:String
                               ) : Call<PopularPersons>
 
         @GET(ApiEndPoints.SEARCH_PEOPLE)
         fun searchPopularPersons(
-            @Query(ApiQueryParams.API_KEY) apiKey:String,
             @Query(ApiQueryParams.PAGE) page:String,
             @Query(ApiQueryParams.SEARCH_QUERY) searchQuery:String
         ) : Call<PopularPersons>

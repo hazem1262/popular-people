@@ -14,7 +14,7 @@ class DetailsApiProvider {
 
     fun getPersonImages(personId:Int) : MutableLiveData<Resource<PersonImages>> {
         val data = MutableLiveData<Resource<PersonImages>>()
-        api.getPersonImages(apiKey = "96eee189d8f440bae690d17f36e9f700", personId = personId.toString()).enqueue(
+        api.getPersonImages(personId = personId.toString()).enqueue(
             object : Callback<PersonImages> {
                 override fun onFailure(call: Call<PersonImages>, t: Throwable) {
                     data.value = Resource.error(Exception(t))
@@ -30,7 +30,7 @@ class DetailsApiProvider {
 
     fun getPersonDetails(personId: Int) : MutableLiveData<Resource<PersonDetails>>{
         val data = MutableLiveData<Resource<PersonDetails>>()
-        api.getPersonDetails(apiKey = "96eee189d8f440bae690d17f36e9f700", personId = personId.toString()).enqueue(
+        api.getPersonDetails(personId = personId.toString()).enqueue(
             object : Callback<PersonDetails>{
                 override fun onFailure(call: Call<PersonDetails>, t: Throwable) {
 
@@ -47,14 +47,12 @@ class DetailsApiProvider {
     interface RetrofitInterface{
         @GET(ApiEndPoints.PERSON_IMAGES)
         fun getPersonImages(
-            @Path(ApiPaths.PERSON_ID) personId:String,
-            @Query(ApiQueryParams.API_KEY) apiKey:String
+            @Path(ApiPaths.PERSON_ID) personId:String
         ) : Call<PersonImages>
 
         @GET(ApiEndPoints.PERSON_DETAILS)
         fun getPersonDetails(
-            @Path(ApiPaths.PERSON_ID) personId:String,
-            @Query(ApiQueryParams.API_KEY) apiKey:String
+            @Path(ApiPaths.PERSON_ID) personId:String
         ) : Call<PersonDetails>
     }
     companion object {
