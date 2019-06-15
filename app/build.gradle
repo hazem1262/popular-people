@@ -51,7 +51,9 @@ dependencies {
     // loading
     implementation rootProject.ext.libraries.shimmer
     implementation rootProject.ext.libraries.skeleton
-
     // permissions
     implementation rootProject.ext.libraries.dexter
+    // error msgs
+    implementation rootProject.ext.libraries.alerter
+
 }

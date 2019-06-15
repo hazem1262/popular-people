@@ -5,4 +5,6 @@
     <string name="knownFor">KnownFor</string>
     <string name="imageTransition">imageTransition</string>
     <string name="storagePermission">storage permission required to save image!</string>
+    <string name="app_internet_error">please make sure there is internet connection</string>
+    <string name="changeAction">android.net.conn.CONNECTIVITY_CHANGE</string>
 </resources>

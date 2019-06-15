@@ -1,7 +1,6 @@
 package com.hazem.popularpeople.screens.details
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
@@ -17,12 +16,12 @@ import kotlinx.android.synthetic.main.activity_details.*
 import androidx.core.app.ActivityOptionsCompat
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
+import com.hazem.popularpeople.core.BaseActivity
 import com.hazem.popularpeople.util.showSkeleton
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"
-class DetailsActivity : AppCompatActivity(), ImageDisplayNavigation {
+class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
 
     private lateinit var viewModel: DetailsViewModel
     private var detailsAdapter = DetailsListAdapter(this)
@@ -41,8 +40,6 @@ class DetailsActivity : AppCompatActivity(), ImageDisplayNavigation {
                 detailsAdapter.insertDetails(viewModel.detailsList)
             }
         })
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         val layoutManager = GridLayoutManager(this,calculateNoOfColumns(this, 170f))
         layoutManager.spanSizeLookup = object :GridLayoutManager.SpanSizeLookup(){
@@ -61,10 +58,6 @@ class DetailsActivity : AppCompatActivity(), ImageDisplayNavigation {
 
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
 
     override fun navigateToDetails(profile: PersonImages.Profile, imageView : View) {
         val intent = Intent(this, ImageFullDisplay::class.java).apply {

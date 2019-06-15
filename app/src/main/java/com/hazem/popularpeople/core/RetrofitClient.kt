@@ -33,6 +33,7 @@ class RetrofitClient {
             chain.proceed(request)
         }
 
+
         val client = OkHttpClient.Builder()
             .addInterceptor(httpUrlInterceptor)
             .connectTimeout(100, TimeUnit.SECONDS)
