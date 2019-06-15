@@ -1,19 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/_130sdp">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="@dimen/_4sdp"
-        app:cardUseCompatPadding="true">
-    <ImageView
-            android:id="@+id/imgCar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"/>
+            app:cardCornerRadius="@dimen/_10sdp"
+            android:focusable="false"
+            android:clickable="false"
+            app:cardUseCompatPadding="true">
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:gravity="center_vertical"
+                      android:focusable="false"
+                      android:clickable="false"
+                      android:orientation="horizontal">
+            <com.github.abdularis.civ.AvatarImageView
+                    android:id="@+id/personImg"
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_100sdp"
+                    android:layout_centerHorizontal="true"
+                    app:avatarBackgroundColor="@color/colorAccent"
+                    app:textColor="@color/white"
+                    app:textSize="28sp"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:scaleType="fitXY"/>
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginStart="@dimen/_20sdp">
+                <LinearLayout android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:orientation="horizontal">
+
+                </LinearLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/app_text_size_medium"
+                        android:textStyle="bold"
+                        android:text="@string/personName"
+                        android:layout_marginTop="@dimen/_5sdp"
+                />
+
+                <TextView
+                        android:id="@+id/personName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        tools:text = "Amr Diab"/>
+
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:textSize="@dimen/app_text_size_medium"
+                        android:textStyle="bold"
+                        android:text="@string/personPopularity"
+                />
+
+                <TextView
+                        android:id="@+id/personPopularity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        tools:text = "95"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:textSize="@dimen/app_text_size_medium"
+                        android:textStyle="bold"
+                        android:text="@string/knownFor"/>
+
+                <TextView
+                        android:id="@+id/personKnownFor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:layout_marginBottom="@dimen/_4sdp"
+                        tools:text = "ice cream fe glem, as7ab ana w enta wala , test film"
+                />
+            </LinearLayout>
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 </LinearLayout>

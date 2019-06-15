@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.data
+package com.hazem.popularpeople.core
 
 object ApiEndPoints {
     const val BASE_URL        = "https://api.themoviedb.org/3/"

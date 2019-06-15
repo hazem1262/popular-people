@@ -13,7 +13,9 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
+            android:usesCleartextTraffic="true"
             android:theme="@style/AppTheme">
+        <!--https://stackoverflow.com/questions/53139689/picasso-image-loading-issue-with-android-9-0-pie-->
         <activity android:name=".screens.image.ImageFullDisplay">
         </activity>
         <activity android:name=".screens.details.DetailsActivity">

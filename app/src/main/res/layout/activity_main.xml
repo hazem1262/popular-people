@@ -9,6 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popularList"
             android:layout_width="match_parent"
+            tools:listitem="@layout/item_person"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
