@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.data
+package com.hazem.popularpeople.core
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

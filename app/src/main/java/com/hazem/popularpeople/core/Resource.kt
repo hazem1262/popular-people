@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.data
+package com.hazem.popularpeople.core
 
 import retrofit2.Response
 
@@ -15,15 +15,23 @@ class Resource<out T> constructor(var status: Status, val data: T?, var exceptio
 	companion object {
 		// creates a SUCCESS resource for HTTP 200, and ERROR otherwise
 		fun <T> create(response: Response<T>?): Resource<T> {
-			return  success(response?.body())
+			return success(response?.body())
 		}
 
 		fun <T> success(data: T?): Resource<T> {
-			return Resource(Status.SUCCESS, data, null)
+			return Resource(
+                Status.SUCCESS,
+                data,
+                null
+            )
 		}
 
 		fun <T> error(exception: Exception?): Resource<T> {
-			return Resource(Status.ERROR, null, exception)
+			return Resource(
+                Status.ERROR,
+                null,
+                exception
+            )
 		}
 
 		fun <T> loading(data: T?): Resource<T> {
