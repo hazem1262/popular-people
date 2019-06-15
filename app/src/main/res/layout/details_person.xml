@@ -1,12 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
-              android:layout_width="wrap_content"
+              android:layout_width="match_parent"
+              android:layout_margin="@dimen/_5sdp"
               android:layout_height="wrap_content">
-<TextView android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/bio"
-          android:textStyle="italic"
-          android:layout_margin="@dimen/_4sdp"
-/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:weightSum="3">
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:orientation="vertical">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/departmentHeader"
+                      android:text="@string/department"
+                      android:textStyle="bold"
+                      android:textColor="@color/app_black"
+            />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/department"
+                      android:textStyle="italic"
+                      tools:text="Acting"
+                      android:layout_margin="@dimen/_4sdp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="0dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/birthDayHeader"
+                      android:text="@string/birthDay"
+                      android:textStyle="bold"
+                      android:textColor="@color/app_black"
+            />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/birthDay"
+                      android:textStyle="italic"
+                      tools:text="Acting"
+                      android:layout_margin="@dimen/_4sdp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_width="0dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/genderHeader"
+                      android:text="@string/gender"
+                      android:textStyle="bold"
+                      android:textColor="@color/app_black"
+            />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/gender"
+                      android:textStyle="italic"
+                      tools:text="Acting"
+                      android:layout_margin="@dimen/_4sdp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/bioHeader"
+              android:text="@string/bio"
+              android:textStyle="bold"
+              android:textColor="@color/app_black"
+                                            />
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/bio"
+              android:textStyle="italic"
+              tools:text="hi this is test text"
+              android:layout_margin="@dimen/_4sdp"/>
 </LinearLayout>

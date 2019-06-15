@@ -1,5 +1,6 @@
 package com.hazem.popularpeople.screens.details
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -31,7 +32,18 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
         title = intent.getStringExtra(PERSON_NAME)
+        // initialize the view model
         viewModel = ViewModelProviders.of(this).get(DetailsViewModel::class.java)
+
+        // observe to the result from search or list data
+        registerObservers()
+
+        getData()
+
+        attachLayoutManager()
+    }
+
+    private fun registerObservers(){
         viewModel.images.observe(this, Observer {} )
         viewModel.header.observe(this, Observer {
             if (it?.status ==  Resource.Status.SUCCESS){
@@ -40,8 +52,17 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
                 detailsAdapter.insertDetails(viewModel.detailsList)
             }
         })
+    }
 
+    @SuppressLint("ResourceType")
+    private fun getData(){
+        viewModel.getPersonDetails(intent.getIntExtra(PERSON_ID, 0))
+        skeleton = detailsList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+    }
+
+    private fun attachLayoutManager(){
         val layoutManager = GridLayoutManager(this,calculateNoOfColumns(this, 170f))
+        // to make the details cell take all the row
         layoutManager.spanSizeLookup = object :GridLayoutManager.SpanSizeLookup(){
             override fun getSpanSize(position: Int): Int {
                 return if (position == 0){
@@ -53,17 +74,13 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
 
         }
         detailsList.layoutManager = layoutManager
-        viewModel.getPersonDetails(intent.getIntExtra(PERSON_ID, 0))
-        skeleton = detailsList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
-
     }
-
-
     override fun navigateToDetails(profile: PersonImages.Profile, imageView : View) {
         val intent = Intent(this, ImageFullDisplay::class.java).apply {
             putExtra(PERSON_IMAGE_PATH, profile.filePath)
             putExtra(PERSON_NAME, intent.getStringExtra(PERSON_NAME))
         }
+        // handle shared element transition
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, resources.getString(R.string.imageTransition))
         startActivity(intent, options.toBundle())
     }

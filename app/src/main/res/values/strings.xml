@@ -7,4 +7,8 @@
     <string name="storagePermission">storage permission required to save image!</string>
     <string name="app_internet_error">please make sure there is internet connection</string>
     <string name="changeAction">android.net.conn.CONNECTIVITY_CHANGE</string>
+    <string name="bio">Bio</string>
+    <string name="department">Department</string>
+    <string name="birthDay">BirthDay</string>
+    <string name="gender">Gender</string>
 </resources>

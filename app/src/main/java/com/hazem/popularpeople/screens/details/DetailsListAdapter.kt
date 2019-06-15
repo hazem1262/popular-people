@@ -31,9 +31,7 @@ class DetailsListAdapter(var imageDisplayNavigation:ImageDisplayNavigation) : Re
 
     }
 
-    override fun getItemCount(): Int {
-        return profiles.size
-    }
+    override fun getItemCount(): Int = profiles.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (profiles[position] is PersonDetails){
@@ -62,7 +60,28 @@ class DetailsListAdapter(var imageDisplayNavigation:ImageDisplayNavigation) : Re
 
     inner class DetailsHeaderHolder(var v: View) : RecyclerView.ViewHolder(v){
         fun bindDetails(details: PersonDetails){
-            v.bio.text = details.biography
+            if (details.biography.isNullOrEmpty()){
+                v.bioHeader.visibility = View.GONE
+            }else{
+                v.bio.text = details.biography
+            }
+
+            if (details.birthday.isNullOrEmpty()){
+                v.birthDayHeader.visibility = View.GONE
+            }else{
+                v.birthDay.text = details.birthday
+            }
+
+            if (details.knownForDepartment.isNullOrEmpty()){
+                v.departmentHeader.visibility = View.GONE
+            }else{
+                v.department.text = details.knownForDepartment
+            }
+            if (details.gender == 0){
+                v.genderHeader.visibility = View.GONE
+            }else{
+                v.gender.text = if (details.gender == 2) "Male" else "Female"
+            }
         }
     }
 }
