@@ -11,4 +11,5 @@
     <string name="department">Department</string>
     <string name="birthDay">BirthDay</string>
     <string name="gender">Gender</string>
+    <string name="topRated">Top Rated</string>
 </resources>

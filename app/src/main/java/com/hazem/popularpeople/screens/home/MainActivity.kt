@@ -22,6 +22,10 @@ import com.hazem.popularpeople.util.showSkeleton
 const val PERSON_ID    = "personID"
 const val PERSON_NAME  = "personName"
 const val FROM_STARRED = "FROM_STARRED"
+/*
+* this activity will be responsible for display [List - Search - Star] people
+* intent.getBooleanExtra(FROM_STARRED) this check to know if it is from star btn
+* */
 class MainActivity : BaseActivity(), DetailsNavigation{
 
     private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
@@ -45,6 +49,8 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         // hide the back btn in the tool bar if not in stars screen
         if (!intent.getBooleanExtra(FROM_STARRED, false)){
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        }else {
+            title = resources.getString(R.string.topRated)
         }
 
     }
@@ -113,7 +119,7 @@ class MainActivity : BaseActivity(), DetailsNavigation{
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         viewModel.resetObservable(dataType = DataType.Search, searchQuery = query)
-                        viewModel.getData()
+//                        viewModel.getData()
                         return false
                     }
 

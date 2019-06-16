@@ -61,7 +61,7 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
                         "${it?.originalName}, "
                     }
                 }
-                v.personKnownFor.text = knownFor
+                v.personKnownFor.text = knownFor.substring(0, knownFor.length - 2)   //remove last ,
             }
 
             v.setOnClickListener { detailsNavigation.navigateToDetails(person) }
