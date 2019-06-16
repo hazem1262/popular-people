@@ -12,7 +12,6 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
         super.onCreate(savedInstanceState)
 
         // register the connectivity receiver to handle network changes
-        registerReceiver(ConnectivityReceiver(), IntentFilter(resources.getString(R.string.changeAction)))
         ConnectivityReceiver.connectivityReceiverListener = this
 
         // show the back btn in the tool bar
@@ -35,6 +34,12 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
         if (!isConnected){
             showInternetError()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // unsubscribe from the connection
+        ConnectivityReceiver.connectivityReceiverListener = null
     }
 
     // handle the tool bar back btn clicked
