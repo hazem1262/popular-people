@@ -54,7 +54,8 @@ class DetailsListAdapter(var imageDisplayNavigation:ImageDisplayNavigation) : Re
         fun bindImage(image: PersonImages.Profile){
             // check if male or female
             var placeholder = if ((profiles[0] as PersonDetails).gender == 2) R.drawable.male else R.drawable.female
-            Picasso.get().load(image.filePath?.getImageUrl())
+            Picasso.get()
+                .load(image.filePath?.getImageUrl())
                 .placeholder(placeholder)
                 .fit()
                 .into(v.detailsImage)

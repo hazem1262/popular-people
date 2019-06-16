@@ -35,7 +35,11 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
             // load person image
             if (!person.profilePath.isNullOrEmpty()){
                 v.personImg.state = AvatarImageView.SHOW_IMAGE
-                Picasso.get().load(person.profilePath.getImageUrl()).fit().placeholder(R.drawable.placeholder).into(v.personImg)
+                Picasso.get()
+                    .load(person.profilePath.getImageUrl())
+                    .fit()
+                    .placeholder(R.drawable.placeholder)
+                    .into(v.personImg)
             }else{
                 v.personImg.state = AvatarImageView.SHOW_INITIAL
                 v.personImg.setText(person.name)
