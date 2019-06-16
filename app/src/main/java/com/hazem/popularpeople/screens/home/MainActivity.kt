@@ -90,7 +90,7 @@ class MainActivity : BaseActivity(), DetailsNavigation{
             if (it?.status == Resource.Status.SUCCESS ){
                 personsAdapter.insertPersons(it.data!!)
             } else if (it?.status == Resource.Status.ERROR){
-                handleNetworkError(it?.exception!!)
+                handleServerError(it?.exception!!)
             }
         })
         if(intent.getBooleanExtra(FROM_STARRED, false)){

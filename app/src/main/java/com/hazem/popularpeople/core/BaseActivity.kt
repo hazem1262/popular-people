@@ -23,7 +23,7 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
     private fun showInternetError() {
         showError(getString(R.string.app_internet_error))
     }
-    fun handleNetworkError(e:Exception){
+    fun handleServerError(e:Exception){
         showError(e.message?:getString(R.string.error))
     }
 
