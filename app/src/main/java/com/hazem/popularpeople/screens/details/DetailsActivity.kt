@@ -19,6 +19,8 @@ import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.BaseActivity
 import com.hazem.popularpeople.util.showSkeleton
+import kotlinx.android.synthetic.main.activity_details.refreshLayout
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"
@@ -43,6 +45,15 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
         getData()
 
         attachLayoutManager()
+        // register the poll to refresh layout
+        reloadData()
+    }
+
+    private fun reloadData() {
+        refreshLayout.setOnRefreshListener {
+            getData()
+            refreshLayout.isRefreshing = false
+        }
     }
 
     private fun registerObservers(){

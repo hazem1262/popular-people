@@ -6,13 +6,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".screens.home.MainActivity">
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/popularList"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            tools:listitem="@layout/item_person"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+            android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/popularList"
+                android:layout_width="match_parent"
+                tools:listitem="@layout/item_person"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

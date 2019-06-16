@@ -6,14 +6,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".screens.home.MainActivity">
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsList"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/details_image"
-            android:layout_gravity="center"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager">
+            android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/details_image"
+                android:layout_gravity="center"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

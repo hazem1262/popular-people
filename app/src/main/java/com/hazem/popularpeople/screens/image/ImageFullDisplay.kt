@@ -31,6 +31,17 @@ class ImageFullDisplay : BaseActivity() {
         setContentView(R.layout.activity_image_full_display)
         title = intent.getStringExtra(PERSON_NAME)
 
+        bindData()
+        reLoadLayout()
+    }
+
+    private fun reLoadLayout(){
+        refreshLayout.setOnRefreshListener {
+            bindData()
+            refreshLayout.isRefreshing = false
+        }
+    }
+    private fun bindData(){
         Picasso.get().load(intent.getStringExtra(PERSON_IMAGE_PATH).getOriginalImageUrl())
             .resize(intent.getIntExtra(IMAGE_WIDTH,0), intent.getIntExtra(IMAGE_HEIGHT,0))
             .into(imageFullDisplay)

@@ -53,6 +53,19 @@ class MainActivity : BaseActivity(), DetailsNavigation{
             title = resources.getString(R.string.topRated)
         }
 
+        // register the poll to refresh layout
+        reloadData()
+
+    }
+
+    private fun reloadData() {
+        refreshLayout.setOnRefreshListener {
+            // only refresh data in case of Browse
+            if (viewModel.apiHelper.dataType == DataType.Browse){
+                viewModel.resetObservable(viewModel.apiHelper.dataType, forceReset = true)
+            }
+            refreshLayout.isRefreshing = false
+        }
     }
 
     private fun handleInfiniteResults() {
@@ -84,7 +97,6 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         viewModel.popularPersons?.observe(this, Observer {
             if (viewModel.apiHelper.currentPage <= 2 && it.data?.size?:0 > 0){
                 skeleton.hide()
-                viewModel.apiHelper.isLoading = false
                 popularList.adapter = personsAdapter
             }
             if (it?.status == Resource.Status.SUCCESS ){
@@ -159,15 +171,5 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         }
         startActivity(intent)
     }
-    override fun onNetworkConnectionChanged(isConnected: Boolean){
-        super.onNetworkConnectionChanged(isConnected)
-        if (isConnected && viewModel.apiHelper.isLoading && viewModel.apiHelper.networkChanged){
-            viewModel.resetObservable(DataType.Browse, forceReset = true)
-        }
-        // make sure network changed from not connected to connected
-        if (!isConnected){
-            viewModel.apiHelper.networkChanged = !isConnected
-        }
-        viewModel.isScrollingBlocked = false
-    }
+
 }
