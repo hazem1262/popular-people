@@ -57,7 +57,11 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
     }
 
     private fun registerObservers(){
-        viewModel.images.observe(this, Observer {} )
+        viewModel.images.observe(this, Observer {
+            if (it?.status == Resource.Status.ERROR){
+                handleServerError(it?.exception!!)
+            }
+        } )
         viewModel.header.observe(this, Observer {
             if (it?.status ==  Resource.Status.SUCCESS){
                 skeleton.hide()

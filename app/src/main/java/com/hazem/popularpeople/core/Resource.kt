@@ -24,6 +24,9 @@ class Resource<out T> constructor(var status: Status, val data: T?, var exceptio
 				val gSon = Gson()
 				val errorBody = gSon.fromJson(response?.errorBody()?.string(), ApiErrorResponse::class.java)
 				error(ApiException(Exception(errorBody.statusMessage)))
+				// in case of non cashed request
+			} else if (response?.code() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT){
+				error(ApiException(Exception("request is not cashed, no internet connection!")))
 			} else{
 				success(response?.body())
 			}

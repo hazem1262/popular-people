@@ -136,7 +136,6 @@ class MainActivity : BaseActivity(), DetailsNavigation{
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         viewModel.resetObservable(dataType = DataType.Search, searchQuery = query)
-//                        viewModel.getData()
                         return false
                     }
 

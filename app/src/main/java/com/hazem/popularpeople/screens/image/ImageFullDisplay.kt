@@ -62,8 +62,8 @@ class ImageFullDisplay : BaseActivity() {
             .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                    Toast.makeText(this@ImageFullDisplay, "downloadingImage", Toast.LENGTH_SHORT).show()
-                    downloadFile(context = this@ImageFullDisplay, url = "http://image.tmdb.org/t/p/w400${intent.getStringExtra(PERSON_IMAGE_PATH)}", fileName = intent.getStringExtra(PERSON_IMAGE_PATH))
+                    Toast.makeText(this@ImageFullDisplay, "downloading Image", Toast.LENGTH_SHORT).show()
+                    downloadFile(context = this@ImageFullDisplay, url = intent.getStringExtra(PERSON_IMAGE_PATH).getOriginalImageUrl(), fileName = intent.getStringExtra(PERSON_IMAGE_PATH))
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse?) {
