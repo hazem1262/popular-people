@@ -11,11 +11,7 @@ data class PopularPersons(
     @SerializedName("total_pages")
     val totalPages: Int?,
     @SerializedName("total_results")
-    val totalResults: Int?,
-    @SerializedName("status_message")
-    val statusMessage : String?,
-    @SerializedName("status_code")
-    val statusCode : Int?
+    val totalResults: Int?
 ) {
     data class PopularPerson(
         @SerializedName("adult")

@@ -21,6 +21,8 @@ class HomeViewModel : ViewModel() {
     var initialNumberOfMovies = 0
     var totalNumberOfMovies  = 20   // just initial value and it is refilled from api response
 
+    // save the network state to check before send requests when scrolling
+    var isConnected = true
     fun getData(isFromStars:Boolean = false) {
         if (isFromStars){
             resetObservable(DataType.Star)
@@ -75,8 +77,8 @@ class HomeViewModel : ViewModel() {
 
     private fun getPopularPersons(){
         popularPersons.addSource(homeRepository.getPopularPersons(apiHelper.currentPage++)){
+            isScrollingBlocked = false
             if (it != null && it.status == Resource.Status.SUCCESS){
-                isScrollingBlocked = false
                 // set the total number of pages
                 apiHelper.totalPages = it.data?.totalPages?:0
                 var oldData = popularPersons.value?.data
@@ -92,8 +94,8 @@ class HomeViewModel : ViewModel() {
         if (apiHelper.searchQuery.isNotEmpty()){
             apiHelper.isSearchStarted = true        //  this check to handle not to reset browse observable untill search start
             popularPersons.addSource(homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery)){
+                isScrollingBlocked = false
                 if (it != null && it.status == Resource.Status.SUCCESS){
-                    isScrollingBlocked = false
                     var oldData = popularPersons.value?.data
                     // set the total number of pages
                     apiHelper.totalPages = it.data?.totalPages?:0

@@ -20,11 +20,14 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
-    private fun showInternetError() {
+    fun showInternetError() {
         showError(getString(R.string.app_internet_error))
     }
     fun handleServerError(e:Exception){
-        showError(e.message?:getString(R.string.error))
+        // remove "java exception: " added by Exception class
+        showError(e.message?.replaceBefore(":","")
+            ?.replace(":","")
+            ?:getString(R.string.error))
     }
 
     private fun showError(errorMessage: String) {

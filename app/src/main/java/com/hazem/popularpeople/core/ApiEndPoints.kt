@@ -7,7 +7,7 @@ object ApiEndPoints {
     const val PERSON_IMAGES    = "person/{person_id}/images"
     const val PERSON_DETAILS   = "person/{person_id}"
     const val TOP_RATED_MOVIES = "movie/top_rated"
-    const val MOVIE_CASTTING   = "movie/{movie_id}/credits"
+    const val MOVIE_CASTING   = "movie/{movie_id}/credits"
 }
 
 object ApiQueryParams {

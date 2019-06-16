@@ -7,11 +7,7 @@ data class PersonImages(
     @SerializedName("id")
     val id: Int?,
     @SerializedName("profiles")
-    val profiles: List<Profile>?,
-    @SerializedName("status_message")
-    val statusMessage : String?,
-    @SerializedName("status_code")
-    val statusCode : Int?
+    val profiles: List<Profile>?
 ) {
     data class Profile(
         @SerializedName("aspect_ratio")

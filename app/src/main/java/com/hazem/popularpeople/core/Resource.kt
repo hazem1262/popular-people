@@ -1,5 +1,6 @@
 package com.hazem.popularpeople.core
 
+import com.google.gson.Gson
 import retrofit2.Response
 import java.net.HttpURLConnection
 
@@ -15,12 +16,16 @@ class Resource<out T> constructor(var status: Status, val data: T?, var exceptio
 
 	companion object {
 		// creates a SUCCESS resource for HTTP 200, and ERROR otherwise
-		fun <T> create(response: Response<T>?, errorMsg:String? = ""): Resource<T> {
+		fun <T> create(response: Response<T>?): Resource<T> {
+			// according to the movieDB docs the api may have 3 status codes [200, 401, 404]
 
-			return if (response?.code() == HttpURLConnection.HTTP_OK){
+			return if (response?.code() == HttpURLConnection.HTTP_NOT_FOUND || response?.code() == HttpURLConnection.HTTP_UNAUTHORIZED){
+				// serializing the error body
+				val gSon = Gson()
+				val errorBody = gSon.fromJson(response?.errorBody()?.string(), ApiErrorResponse::class.java)
+				error(ApiException(Exception(errorBody.statusMessage)))
+			} else{
 				success(response?.body())
-			} else {
-				error(ApiException(Exception(errorMsg)))
 			}
 		}
 

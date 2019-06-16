@@ -76,8 +76,12 @@ class MainActivity : BaseActivity(), DetailsNavigation{
                         super.onScrollStateChanged(recyclerView, newState)
                         // detect if cannot scroll vertically
                         if (!recyclerView.canScrollVertically(1) && !viewModel.isScrollingBlocked) {
-                            viewModel.isScrollingBlocked = true
-                            viewModel.getData()
+                            if (viewModel.isConnected){
+                                viewModel.isScrollingBlocked = true
+                                viewModel.getData()
+                            }else{
+                                showInternetError()
+                            }
                         }
                     }
                 }
@@ -172,4 +176,8 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         startActivity(intent)
     }
 
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        super.onNetworkConnectionChanged(isConnected)
+        viewModel.isConnected = isConnected
+    }
 }

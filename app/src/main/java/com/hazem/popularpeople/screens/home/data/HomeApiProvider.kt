@@ -22,7 +22,7 @@ class HomeApiProvider {
                 }
 
                 override fun onResponse(call: Call<PopularPersons>, response: Response<PopularPersons>) {
-                    data.value = Resource.create(response, response.message())
+                    data.value = Resource.create(response)
                 }
 
             }
@@ -97,7 +97,7 @@ class HomeApiProvider {
 
         ) : Call<MovesResponse>
 
-        @GET(ApiEndPoints.MOVIE_CASTTING)
+        @GET(ApiEndPoints.MOVIE_CASTING)
         fun getMovieCast(
             @Path(ApiPaths.MOVIE_ID) movieId : String
         ) : Call<CastingResponse>
