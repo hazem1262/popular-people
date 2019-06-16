@@ -18,7 +18,7 @@ class DetailsViewModel : ViewModel() {
         if (detailsList.isNullOrEmpty() && !isRequestSend){
             val detailsObserver =
                 Observer<Resource<PersonDetails>> {
-                    if (it != null){
+                    if (it != null && it.status == Resource.Status.SUCCESS){
                         detailsList.add(0, it.data!!)
                     }
                     header.postValue(
@@ -26,10 +26,12 @@ class DetailsViewModel : ViewModel() {
                     )
                 }
             images.addSource(detailsRepository.getPersonImages(personId)){
-                if (it != null){
+                if (it != null && it.status == Resource.Status.SUCCESS){
                     images.postValue(Resource.success(it.data))
                     detailsList.addAll(it.data?.profiles?: arrayListOf())
                     header.addSource(detailsRepository.getPersonDetails(personId), detailsObserver)
+                } else{
+                    images.postValue(Resource.error(it.exception))
                 }
             }
         }

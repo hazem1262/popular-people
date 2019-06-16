@@ -19,7 +19,7 @@ class HomeViewModel : ViewModel() {
     var topRatedMovieCast : MediatorLiveData<Resource<MutableList<CastingResponse>>> = MediatorLiveData()
     var topRatedMap: HashMap<CastingResponse.Cast, Int> = HashMap()
     var initialNumberOfMovies = 0
-    var totalNumberOfMovies  = 20
+    var totalNumberOfMovies  = 20   // just initial value and it is refilled from api response
 
     fun getData(isFromStars:Boolean = false) {
         if (isFromStars){
@@ -39,7 +39,7 @@ class HomeViewModel : ViewModel() {
     private fun getTopRated() {
         var castingObserver =
             Observer<Resource<CastingResponse>>{ it ->
-                if (it != null){
+                if (it != null && it.status == Resource.Status.SUCCESS){
                     it.data?.cast?.forEach { cast ->
                         if (topRatedMap.containsKey(cast)){
                             topRatedMap[cast!!] = topRatedMap[cast!!]!! + 1
@@ -59,6 +59,8 @@ class HomeViewModel : ViewModel() {
                         }.toMutableList()
                         popularPersons.postValue(Resource.success(mapToPopularPersons))
                     }
+                } else{
+                    popularPersons.postValue(Resource.error(it.exception))
                 }
             }
         topRatedMovies.addSource(homeRepository.getTopRatedMovies()){ it ->
@@ -73,22 +75,24 @@ class HomeViewModel : ViewModel() {
 
     private fun getPopularPersons(){
         popularPersons.addSource(homeRepository.getPopularPersons(apiHelper.currentPage++)){
-            if (it != null){
+            if (it != null && it.status == Resource.Status.SUCCESS){
                 isScrollingBlocked = false
                 // set the total number of pages
                 apiHelper.totalPages = it.data?.totalPages?:0
                 var oldData = popularPersons.value?.data
-                oldData?.addAll(it.data?.results!!)
-            popularPersons.postValue(Resource.success(oldData?:it.data?.results!!))
+                oldData?.addAll(it.data?.results?: arrayListOf())
+                popularPersons.postValue(Resource.success(oldData?:it.data?.results!!))
+            } else{
+                popularPersons.postValue(Resource.error(it.exception))
             }
         }
     }
 
     private fun searchPopularPersons(){
         if (apiHelper.searchQuery.isNotEmpty()){
-            apiHelper.isSearchStarted = true
+            apiHelper.isSearchStarted = true        //  this check to handle not to reset browse observable untill search start
             popularPersons.addSource(homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery)){
-                if (it != null){
+                if (it != null && it.status == Resource.Status.SUCCESS){
                     isScrollingBlocked = false
                     var oldData = popularPersons.value?.data
                     // set the total number of pages
@@ -99,7 +103,10 @@ class HomeViewModel : ViewModel() {
                     }else{
                         oldData
                     }
+
                     popularPersons.postValue(Resource.success(toBeSendData))
+                } else{
+                    popularPersons.postValue(Resource.error(it.exception))
                 }
             }
         }

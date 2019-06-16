@@ -31,5 +31,9 @@ data class PersonDetails(
     @SerializedName("popularity")
     val popularity: Double?,
     @SerializedName("profile_path")
-    val profilePath: String?
+    val profilePath: String?,
+    @SerializedName("status_message")
+    val statusMessage : String?,
+    @SerializedName("status_code")
+    val statusCode : Int?
 )

@@ -17,7 +17,8 @@ class DetailsApiProvider {
         api.getPersonImages(personId = personId.toString()).enqueue(
             object : Callback<PersonImages> {
                 override fun onFailure(call: Call<PersonImages>, t: Throwable) {
-                    data.value = Resource.error(Exception(t))
+                    val exception = Exception(t)
+                    data.value = Resource.error(exception)
                 }
 
                 override fun onResponse(call: Call<PersonImages>, response: Response<PersonImages>) {
@@ -33,13 +34,13 @@ class DetailsApiProvider {
         api.getPersonDetails(personId = personId.toString()).enqueue(
             object : Callback<PersonDetails>{
                 override fun onFailure(call: Call<PersonDetails>, t: Throwable) {
-
+                    val exception = Exception(t)
+                    data.value = Resource.error(exception)
                 }
 
                 override fun onResponse(call: Call<PersonDetails>, response: Response<PersonDetails>) {
                     data.value = Resource.create(response)
                 }
-
             }
         )
         return data

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.hazem.popularpeople.R
 import com.tapadoo.alerter.Alerter
+import java.lang.Exception
 
 open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener  {
 
@@ -21,6 +22,9 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
 
     private fun showInternetError() {
         showError(getString(R.string.app_internet_error))
+    }
+    fun handleNetworkError(e:Exception){
+        showError(e.message?:getString(R.string.error))
     }
 
     private fun showError(errorMessage: String) {

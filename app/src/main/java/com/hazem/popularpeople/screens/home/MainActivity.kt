@@ -88,8 +88,9 @@ class MainActivity : BaseActivity(), DetailsNavigation{
                 popularList.adapter = personsAdapter
             }
             if (it?.status == Resource.Status.SUCCESS ){
-
                 personsAdapter.insertPersons(it.data!!)
+            } else if (it?.status == Resource.Status.ERROR){
+                handleNetworkError(it?.exception!!)
             }
         })
         if(intent.getBooleanExtra(FROM_STARRED, false)){

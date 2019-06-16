@@ -52,6 +52,8 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
                 skeleton.hide()
                 detailsList.adapter = detailsAdapter
                 detailsAdapter.insertDetails(viewModel.detailsList)
+            }else if (it?.status == Resource.Status.ERROR){
+                handleNetworkError(it?.exception!!)
             }
         })
     }

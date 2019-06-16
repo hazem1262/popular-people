@@ -12,4 +12,5 @@
     <string name="birthDay">BirthDay</string>
     <string name="gender">Gender</string>
     <string name="topRated">Top Rated</string>
+    <string name="error">general error msg!!</string>
 </resources>

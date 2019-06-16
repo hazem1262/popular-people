@@ -17,11 +17,12 @@ class HomeApiProvider {
         api.getPopularPersons(page = page.toString()).enqueue(
             object :Callback<PopularPersons>{
                 override fun onFailure(call: Call<PopularPersons>, t: Throwable) {
-
+                    val exception = Exception(t)
+                    data.value = Resource.error(exception)
                 }
 
                 override fun onResponse(call: Call<PopularPersons>, response: Response<PopularPersons>) {
-                    data.value = Resource.create(response)
+                    data.value = Resource.create(response, response.message())
                 }
 
             }
@@ -33,13 +34,13 @@ class HomeApiProvider {
         api.searchPopularPersons( page = page.toString(), searchQuery = searchQuery).enqueue(
             object : Callback<PopularPersons> {
                 override fun onFailure(call: Call<PopularPersons>, t: Throwable) {
-
+                    val exception = Exception(t)
+                    data.value = Resource.error(exception)
                 }
 
                 override fun onResponse(call: Call<PopularPersons>, response: Response<PopularPersons>) {
                     data.value = Resource.create(response)
                 }
-
             }
         )
         return data
@@ -50,13 +51,13 @@ class HomeApiProvider {
         api.getTopRatedMovies().enqueue(
             object : Callback<MovesResponse>{
                 override fun onFailure(call: Call<MovesResponse>, t: Throwable) {
-
+                    val exception = Exception(t)
+                    data.value = Resource.error(exception)
                 }
 
                 override fun onResponse(call: Call<MovesResponse>, response: Response<MovesResponse>) {
                     data.value = Resource.create(response)
                 }
-
             }
         )
         return data
@@ -71,6 +72,8 @@ class HomeApiProvider {
                 }
 
                 override fun onFailure(call: Call<CastingResponse>, t: Throwable) {
+                    val exception = Exception(t)
+                    data.value = Resource.error(exception)
                 }
 
             }
