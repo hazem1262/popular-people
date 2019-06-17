@@ -1,4 +1,4 @@
-package com.hazem.popularpeople.core
+package com.hazem.popularpeople.core.network
 
 import android.content.Context
 import android.net.ConnectivityManager

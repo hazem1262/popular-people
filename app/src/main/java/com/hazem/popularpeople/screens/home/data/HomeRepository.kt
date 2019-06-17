@@ -1,7 +1,7 @@
 package com.hazem.popularpeople.screens.home.data
 
 import androidx.lifecycle.MutableLiveData
-import com.hazem.popularpeople.core.Resource
+import com.hazem.popularpeople.core.network.Resource
 
 class HomeRepository {
 

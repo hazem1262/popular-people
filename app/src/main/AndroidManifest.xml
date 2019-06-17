@@ -18,7 +18,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".core.BaseActivity">
+        <activity android:name=".core.ui.BaseActivity">
         </activity>
         <!-- https://stackoverflow.com/questions/53139689/picasso-image-loading-issue-with-android-9-0-pie -->
         <activity android:name=".screens.image.ImageFullDisplay"

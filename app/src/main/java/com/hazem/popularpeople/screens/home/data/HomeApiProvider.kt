@@ -1,12 +1,11 @@
 package com.hazem.popularpeople.screens.home.data
 
 import androidx.lifecycle.MutableLiveData
-import com.hazem.popularpeople.core.*
+import com.hazem.popularpeople.core.network.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 

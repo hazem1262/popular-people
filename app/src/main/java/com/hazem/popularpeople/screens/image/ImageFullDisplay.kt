@@ -1,7 +1,6 @@
 package com.hazem.popularpeople.screens.image
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
@@ -10,7 +9,7 @@ import com.hazem.popularpeople.screens.home.PERSON_NAME
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_image_full_display.*
 import com.hazem.popularpeople.R
-import com.hazem.popularpeople.core.BaseActivity
+import com.hazem.popularpeople.core.ui.BaseActivity
 import com.hazem.popularpeople.screens.details.IMAGE_HEIGHT
 import com.hazem.popularpeople.screens.details.IMAGE_WIDTH
 import com.hazem.popularpeople.util.downloadFile

@@ -3,7 +3,7 @@ package com.hazem.popularpeople.screens.home
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
-import com.hazem.popularpeople.core.Resource
+import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.screens.home.data.*
 
 class HomeViewModel : ViewModel() {

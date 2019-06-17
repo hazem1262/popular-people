@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.hazem.popularpeople.screens.details.data.PersonDetails
 import com.hazem.popularpeople.screens.details.data.PersonImages
-import com.hazem.popularpeople.core.Resource
+import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.screens.details.data.DetailsRepository
 
 class DetailsViewModel : ViewModel() {

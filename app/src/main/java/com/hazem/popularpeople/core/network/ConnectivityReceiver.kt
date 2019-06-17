@@ -1,25 +1,26 @@
-package com.hazem.popularpeople.core
+package com.hazem.popularpeople.core.network
 
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Build
 import android.os.PowerManager
 import android.util.Log
 
 
 /**
- * Created by Hazem.Ashraf on 6/15/2018.
+ * Created by hazem.ashraf on 6/15/2018.
  * http://devdeeds.com/android-kotlin-listen-to-internet-connection-using-broadcastreceiver/
  */
 
 class ConnectivityReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, arg1: Intent) {
-	    connectivityReceiverListener?.onNetworkConnectionChanged(isConnectedOrConnecting(context))
+	    connectivityReceiverListener?.onNetworkConnectionChanged(
+            isConnectedOrConnecting(context)
+        )
     }
 
     interface ConnectivityReceiverListener {
@@ -35,7 +36,10 @@ class ConnectivityReceiver : BroadcastReceiver() {
 		    val networkInfo = connMgr.activeNetworkInfo
 
 		    // it appears that calling the function twice solves the problem!! (some devices turnoff network access to apps that have been in the background for too long)
-		    Log.d(ConnectivityReceiver::class.java.simpleName, "isConnectedOrConnecting -- isInteractive: ${isInteractive(context)} - isConnected: ${networkInfo != null && networkInfo.isConnectedOrConnecting}")
+		    Log.d(
+                ConnectivityReceiver::class.java.simpleName, "isConnectedOrConnecting -- isInteractive: ${isInteractive(
+                    context
+                )} - isConnected: ${networkInfo != null && networkInfo.isConnectedOrConnecting}")
 		    return if (isInteractive(context)) networkInfo != null && networkInfo.isConnected else true
 	    }
 

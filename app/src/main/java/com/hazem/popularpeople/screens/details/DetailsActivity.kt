@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hazem.popularpeople.screens.details.data.PersonImages
-import com.hazem.popularpeople.core.Resource
+import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.screens.home.PERSON_ID
 import com.hazem.popularpeople.screens.home.PERSON_NAME
 import com.hazem.popularpeople.screens.image.ImageFullDisplay
@@ -17,10 +17,9 @@ import kotlinx.android.synthetic.main.activity_details.*
 import androidx.core.app.ActivityOptionsCompat
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
-import com.hazem.popularpeople.core.BaseActivity
+import com.hazem.popularpeople.core.ui.BaseActivity
 import com.hazem.popularpeople.util.showSkeleton
 import kotlinx.android.synthetic.main.activity_details.refreshLayout
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"

@@ -1,6 +1,7 @@
-package com.hazem.popularpeople.core
+package com.hazem.popularpeople.core.network
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.hazem.popularpeople.core.PopularPeopleApplication
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -28,12 +29,16 @@ class RetrofitClient {
             val url = request.url()
             val urlBuilder = url.newBuilder()
 
-            urlBuilder.addQueryParameter(ApiQueryParams.API_KEY, API_KEY_VALUE)
+            urlBuilder.addQueryParameter(
+                ApiQueryParams.API_KEY,
+                API_KEY_VALUE
+            )
             request = request.newBuilder().url(urlBuilder.build()).build()
             chain.proceed(request)
         }
 
         // create an Interceptor to the OkHttpClient.
+        // https://medium.com/mindorks/caching-with-retrofit-store-responses-offline-71439ed32fda
         val cashInterceptor =
             Interceptor { chain ->
 

@@ -3,6 +3,8 @@ package com.hazem.popularpeople.core
 import android.app.Application
 import android.content.IntentFilter
 import com.hazem.popularpeople.R
+import com.hazem.popularpeople.core.network.ConnectivityReceiver
+import com.hazem.popularpeople.core.network.RetrofitCashHelper
 
 class PopularPeopleApplication : Application() {
     companion object{

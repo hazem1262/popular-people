@@ -1,6 +1,7 @@
-package com.hazem.popularpeople.core
+package com.hazem.popularpeople.core.network
 
 import com.google.gson.Gson
+import com.hazem.popularpeople.core.exceptions.ApiException
 import retrofit2.Response
 import java.net.HttpURLConnection
 
@@ -24,32 +25,35 @@ class Resource<out T> constructor(var status: Status, val data: T?, var exceptio
 					// serializing the error body
 					val gSon = Gson()
 					val errorBody = gSon.fromJson(response?.errorBody()?.string(), ApiErrorResponse::class.java)
-					error(ApiException(Exception(errorBody.statusMessage)))
+					error(
+						ApiException(
+							Exception(errorBody.statusMessage)
+						)
+					)
 					// in case of non cashed request
 				}
-				response?.code() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> error(ApiException(Exception("request is not cashed, no internet connection!")))
+				response?.code() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> error(
+					ApiException(Exception("request is not cashed, no internet connection!"))
+				)
 				else -> success(response?.body())
 			}
 		}
 
 		fun <T> success(data: T?): Resource<T> {
 			return Resource(
-                Status.SUCCESS,
-                data,
-                null
-            )
+				Status.SUCCESS,
+				data,
+				null
+			)
 		}
 
 		fun <T> error(exception: Exception?): Resource<T> {
 			return Resource(
-                Status.ERROR,
-                null,
-                exception
-            )
+				Status.ERROR,
+				null,
+				exception
+			)
 		}
 
-		fun <T> loading(data: T?): Resource<T> {
-			return Resource(Status.ERROR, data, null)
-		}
 	}
 }

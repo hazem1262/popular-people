@@ -8,12 +8,12 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.hazem.popularpeople.core.Resource
+import com.hazem.popularpeople.core.network.Resource
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
-import com.hazem.popularpeople.core.BaseActivity
+import com.hazem.popularpeople.core.ui.BaseActivity
 import com.hazem.popularpeople.screens.home.data.PopularPersons
 import com.hazem.popularpeople.screens.details.DetailsActivity
 import com.hazem.popularpeople.screens.home.data.DataType
