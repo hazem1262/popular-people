@@ -11,6 +11,7 @@ class HomeViewModel : ViewModel() {
     var apiHelper = NetworkHelper()
     // popular persons live data will be used to handle listing and searching for people
     var popularPersons : MediatorLiveData<Resource<MutableList<PopularPersons.PopularPerson>>> = MediatorLiveData()
+    var tempData : MutableList<PopularPersons.PopularPerson>? = arrayListOf()
     // to prevent scrolling events from sending multiple requests
     var isScrollingBlocked : Boolean = false
 
@@ -23,6 +24,7 @@ class HomeViewModel : ViewModel() {
 
     // save the network state to check before send requests when scrolling
     var isConnected = true
+
     fun getData(isFromStars:Boolean = false) {
         if (isFromStars){
             resetObservable(DataType.Star)
@@ -33,6 +35,51 @@ class HomeViewModel : ViewModel() {
                     apiHelper.dataType == DataType.Browse -> getPopularPersons()
                     apiHelper.dataType == DataType.Search -> searchPopularPersons()
                     apiHelper.dataType == DataType.Star -> getTopRated()
+                }
+            }
+        }
+    }
+
+    private fun getPopularPersons(){
+        popularPersons.addSource(homeRepository.getPopularPersons(apiHelper.currentPage++)){
+            isScrollingBlocked = false
+            if (it != null && it.status == Resource.Status.SUCCESS){
+                // set the total number of pages
+                apiHelper.totalPages = it.data?.totalPages?:0
+                if (popularPersons.value?.data != null){
+                    tempData = popularPersons.value?.data
+                }
+                tempData?.addAll(it.data?.results?: arrayListOf())
+                popularPersons.postValue(Resource.success(tempData?:it.data?.results!!))
+            } else{
+                apiHelper.currentPage--   //reduce the current page again
+                popularPersons.postValue(Resource.error(it.exception))
+            }
+        }
+    }
+
+    private fun searchPopularPersons(){
+        if (apiHelper.searchQuery.isNotEmpty()){
+            apiHelper.isSearchStarted = true        //  this check to handle not to reset browse observable untill search start
+            popularPersons.addSource(homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery)){
+                isScrollingBlocked = false
+                if (it != null && it.status == Resource.Status.SUCCESS){
+                    if (popularPersons.value?.data != null){
+                        tempData = popularPersons.value?.data
+                    }
+                    // set the total number of pages
+                    apiHelper.totalPages = it.data?.totalPages?:0
+                    tempData?.addAll(it.data?.results!!)
+                    val toBeSendData = if (tempData == null || apiHelper.currentPage == 2){
+                        it.data?.results!!
+                    }else{
+                        tempData
+                    }
+
+                    popularPersons.postValue(Resource.success(toBeSendData))
+                } else{
+                    apiHelper.currentPage--   //reduce the current page again
+                    popularPersons.postValue(Resource.error(it.exception))
                 }
             }
         }
@@ -75,44 +122,9 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private fun getPopularPersons(){
-        popularPersons.addSource(homeRepository.getPopularPersons(apiHelper.currentPage++)){
-            isScrollingBlocked = false
-            if (it != null && it.status == Resource.Status.SUCCESS){
-                // set the total number of pages
-                apiHelper.totalPages = it.data?.totalPages?:0
-                var oldData = popularPersons.value?.data
-                oldData?.addAll(it.data?.results?: arrayListOf())
-                popularPersons.postValue(Resource.success(oldData?:it.data?.results!!))
-            } else{
-                popularPersons.postValue(Resource.error(it.exception))
-            }
-        }
-    }
 
-    private fun searchPopularPersons(){
-        if (apiHelper.searchQuery.isNotEmpty()){
-            apiHelper.isSearchStarted = true        //  this check to handle not to reset browse observable untill search start
-            popularPersons.addSource(homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery)){
-                isScrollingBlocked = false
-                if (it != null && it.status == Resource.Status.SUCCESS){
-                    var oldData = popularPersons.value?.data
-                    // set the total number of pages
-                    apiHelper.totalPages = it.data?.totalPages?:0
-                    oldData?.addAll(it.data?.results!!)
-                    val toBeSendData = if (oldData == null || apiHelper.currentPage == 2){
-                        it.data?.results!!
-                    }else{
-                        oldData
-                    }
 
-                    popularPersons.postValue(Resource.success(toBeSendData))
-                } else{
-                    popularPersons.postValue(Resource.error(it.exception))
-                }
-            }
-        }
-    }
+
 
     fun updateSearchQuery(newSearchQuery:String){
         apiHelper.searchQuery = newSearchQuery

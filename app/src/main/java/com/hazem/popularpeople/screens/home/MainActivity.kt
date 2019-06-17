@@ -76,12 +76,8 @@ class MainActivity : BaseActivity(), DetailsNavigation{
                         super.onScrollStateChanged(recyclerView, newState)
                         // detect if cannot scroll vertically
                         if (!recyclerView.canScrollVertically(1) && !viewModel.isScrollingBlocked) {
-                            if (viewModel.isConnected){
-                                viewModel.isScrollingBlocked = true
-                                viewModel.getData()
-                            }else{
-                                showInternetError()
-                            }
+                            viewModel.isScrollingBlocked = true
+                            viewModel.getData()
                         }
                     }
                 }

@@ -19,16 +19,16 @@ class Resource<out T> constructor(var status: Status, val data: T?, var exceptio
 		fun <T> create(response: Response<T>?): Resource<T> {
 			// according to the movieDB docs the api may have 3 status codes [200, 401, 404]
 
-			return if (response?.code() == HttpURLConnection.HTTP_NOT_FOUND || response?.code() == HttpURLConnection.HTTP_UNAUTHORIZED){
-				// serializing the error body
-				val gSon = Gson()
-				val errorBody = gSon.fromJson(response?.errorBody()?.string(), ApiErrorResponse::class.java)
-				error(ApiException(Exception(errorBody.statusMessage)))
-				// in case of non cashed request
-			} else if (response?.code() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT){
-				error(ApiException(Exception("request is not cashed, no internet connection!")))
-			} else{
-				success(response?.body())
+			return when {
+				response?.code() == HttpURLConnection.HTTP_UNAUTHORIZED -> {
+					// serializing the error body
+					val gSon = Gson()
+					val errorBody = gSon.fromJson(response?.errorBody()?.string(), ApiErrorResponse::class.java)
+					error(ApiException(Exception(errorBody.statusMessage)))
+					// in case of non cashed request
+				}
+				response?.code() == HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> error(ApiException(Exception("request is not cashed, no internet connection!")))
+				else -> success(response?.body())
 			}
 		}
 
