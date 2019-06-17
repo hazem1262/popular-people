@@ -24,7 +24,8 @@
         <activity android:name=".screens.image.ImageFullDisplay"
                   android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".screens.details.DetailsActivity">
+        <activity android:name=".screens.details.DetailsActivity"
+                  android:screenOrientation="portrait">
         </activity>
         <activity
                 android:name=".screens.home.MainActivity"

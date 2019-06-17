@@ -52,12 +52,12 @@ class RetrofitClient {
             */
             request = if (PopularPeopleApplication.retrofitCashHelper?.hasNetwork() == true)
             /*
-            *  If there is Internet, get the cache that was stored 0 seconds ago.
-            *  If the cache is older than 50 seconds, then discard it,
+            *  If there is Internet, get the cache that was stored 1 hour ago.
+            *  If the cache is older than 1 hour, then discard it,
             *  and indicate an error in fetching the response.
             *  The 'max-age' attribute is responsible for this behavior.
             */
-                request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build()
+                request.newBuilder().header("Cache-Control", "public, max-age=" + 60 * 60).build()
             else
             /*
             *  If there is no Internet, get the cache that was stored 7 days ago.
