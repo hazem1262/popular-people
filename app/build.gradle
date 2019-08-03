@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
-
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -55,5 +55,12 @@ dependencies {
     implementation rootProject.ext.libraries.dexter
     // error msgs
     implementation rootProject.ext.libraries.alerter
+    // dagger
+    implementation rootProject.ext.libraries.dagger
+    implementation rootProject.ext.libraries.daggerAndroid
+    implementation rootProject.ext.libraries.daggerAndroidSupport
+
+    kapt rootProject.ext.aptLibraries.daggerCompiler
+    kapt rootProject.ext.aptLibraries.daggerProcessor
 
 }

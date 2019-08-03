@@ -18,6 +18,7 @@ import com.hazem.popularpeople.screens.home.data.PopularPersons
 import com.hazem.popularpeople.screens.details.DetailsActivity
 import com.hazem.popularpeople.screens.home.data.DataType
 import com.hazem.popularpeople.util.showSkeleton
+import javax.inject.Inject
 
 const val PERSON_ID    = "personID"
 const val PERSON_NAME  = "personName"
@@ -29,15 +30,16 @@ const val FROM_STARRED = "FROM_STARRED"
 class MainActivity : BaseActivity(), DetailsNavigation{
 
     private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
-    private lateinit var viewModel: HomeViewModel
+    @Inject
+    lateinit var viewModel: HomeViewModel
     private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // initialize the viewModel
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+
+        activityComponent.inject(this)
         // observe to the result from search or list data
         registerObservers()
 

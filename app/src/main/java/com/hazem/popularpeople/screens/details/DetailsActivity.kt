@@ -20,6 +20,7 @@ import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.ui.BaseActivity
 import com.hazem.popularpeople.util.showSkeleton
 import kotlinx.android.synthetic.main.activity_details.refreshLayout
+import javax.inject.Inject
 
 
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"
@@ -27,7 +28,8 @@ const val IMAGE_WIDTH       = "IMAGE_WIDTH"
 const val IMAGE_HEIGHT      = "IMAGE_HEIGHT"
 class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
 
-    private lateinit var viewModel: DetailsViewModel
+    @Inject
+    lateinit var viewModel: DetailsViewModel
     private var detailsAdapter = DetailsListAdapter(this)
     private lateinit var skeleton: RecyclerViewSkeletonScreen
 
@@ -35,9 +37,8 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
         title = intent.getStringExtra(PERSON_NAME)
-        // initialize the view model
-        viewModel = ViewModelProviders.of(this).get(DetailsViewModel::class.java)
 
+        activityComponent.inject(this)
         // observe to the result from search or list data
         registerObservers()
 
