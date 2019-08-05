@@ -41,7 +41,6 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
         setContentView(R.layout.activity_details)
         title = intent.getStringExtra(PERSON_NAME)
 
-        activityComponent.inject(this)
 
         viewModel = ViewModelProviders
             .of(this, viewModelFactory)

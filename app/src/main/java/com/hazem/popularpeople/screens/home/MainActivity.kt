@@ -40,7 +40,6 @@ class MainActivity : BaseActivity(), DetailsNavigation{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        activityComponent.inject(this)
         viewModel = ViewModelProviders
             .of(this, viewModelFactory)
             .get(HomeViewModel::class.java)
