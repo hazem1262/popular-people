@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-class HomeApiProvider {
+class HomeApiProvider(var api : HomeRetrofitInterface) {
 
     fun getPopularPersons(page:Int) : MutableLiveData<Resource<PopularPersons>> {
         val data = MutableLiveData<Resource<PopularPersons>>()
@@ -79,7 +79,7 @@ class HomeApiProvider {
         )
         return data
     }
-    interface RetrofitInterface{
+    interface HomeRetrofitInterface{
         @GET(ApiEndPoints.POPULAR_PERSONS)
         fun getPopularPersons(
             @Query(ApiQueryParams.PAGE) page:String
@@ -102,9 +102,5 @@ class HomeApiProvider {
         ) : Call<CastingResponse>
     }
 
-    companion object {
-        private val api : RetrofitInterface by lazy { RetrofitClient.instance.create(
-            RetrofitInterface::class.java) }
-    }
 
 }

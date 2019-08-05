@@ -12,7 +12,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import java.lang.Exception
 
-class DetailsApiProvider {
+class DetailsApiProvider(var api : DetailsRetrofitInterface) {
 
     fun getPersonImages(personId:Int) : MutableLiveData<Resource<PersonImages>> {
         val data = MutableLiveData<Resource<PersonImages>>()
@@ -47,7 +47,7 @@ class DetailsApiProvider {
         )
         return data
     }
-    interface RetrofitInterface{
+    interface DetailsRetrofitInterface{
         @GET(ApiEndPoints.PERSON_IMAGES)
         fun getPersonImages(
             @Path(ApiPaths.PERSON_ID) personId:String
@@ -58,8 +58,5 @@ class DetailsApiProvider {
             @Path(ApiPaths.PERSON_ID) personId:String
         ) : Call<PersonDetails>
     }
-    companion object {
-        private val api : RetrofitInterface by lazy { RetrofitClient.instance.create(
-            RetrofitInterface::class.java) }
-    }
+
 }

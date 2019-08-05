@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.ui.BaseActivity
+import com.hazem.popularpeople.di.utility.ViewModelFactory
 import com.hazem.popularpeople.screens.home.data.PopularPersons
 import com.hazem.popularpeople.screens.details.DetailsActivity
 import com.hazem.popularpeople.screens.home.data.DataType
@@ -29,17 +30,20 @@ const val FROM_STARRED = "FROM_STARRED"
 * */
 class MainActivity : BaseActivity(), DetailsNavigation{
 
-    private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
     @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
     lateinit var viewModel: HomeViewModel
     private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
         activityComponent.inject(this)
+        viewModel = ViewModelProviders
+            .of(this, viewModelFactory)
+            .get(HomeViewModel::class.java)
         // observe to the result from search or list data
         registerObservers()
 

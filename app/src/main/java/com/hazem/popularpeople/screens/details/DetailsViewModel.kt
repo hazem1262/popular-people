@@ -7,8 +7,11 @@ import com.hazem.popularpeople.screens.details.data.PersonDetails
 import com.hazem.popularpeople.screens.details.data.PersonImages
 import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.screens.details.data.DetailsRepository
+import javax.inject.Inject
 
-class DetailsViewModel : ViewModel() {
+class DetailsViewModel @Inject constructor(): ViewModel() {
+    @Inject
+    lateinit var detailsRepository : DetailsRepository
     var images: MediatorLiveData<Resource<PersonImages>> = MediatorLiveData()
     var header: MediatorLiveData<Resource<PersonDetails>> = MediatorLiveData()
     var detailsList : MutableList<Any> = arrayListOf()
@@ -37,5 +40,5 @@ class DetailsViewModel : ViewModel() {
         }
     }
 
-    private val detailsRepository by lazy { DetailsRepository() }
+
 }

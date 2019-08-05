@@ -18,6 +18,7 @@ import androidx.core.app.ActivityOptionsCompat
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.ui.BaseActivity
+import com.hazem.popularpeople.di.utility.ViewModelFactory
 import com.hazem.popularpeople.util.showSkeleton
 import kotlinx.android.synthetic.main.activity_details.refreshLayout
 import javax.inject.Inject
@@ -29,6 +30,8 @@ const val IMAGE_HEIGHT      = "IMAGE_HEIGHT"
 class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
 
     @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     lateinit var viewModel: DetailsViewModel
     private var detailsAdapter = DetailsListAdapter(this)
     private lateinit var skeleton: RecyclerViewSkeletonScreen
@@ -39,6 +42,10 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
         title = intent.getStringExtra(PERSON_NAME)
 
         activityComponent.inject(this)
+
+        viewModel = ViewModelProviders
+            .of(this, viewModelFactory)
+            .get(DetailsViewModel::class.java)
         // observe to the result from search or list data
         registerObservers()
 

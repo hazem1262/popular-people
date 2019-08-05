@@ -2,8 +2,10 @@ package com.hazem.popularpeople.screens.home.data
 
 import androidx.lifecycle.MutableLiveData
 import com.hazem.popularpeople.core.network.Resource
+import javax.inject.Inject
 
-class HomeRepository {
+class HomeRepository(var homeApi:HomeApiProvider) {
+
 
     fun getPopularPersons(page:Int) : MutableLiveData<Resource<PopularPersons>>
             = homeApi.getPopularPersons(page)
@@ -17,6 +19,6 @@ class HomeRepository {
     fun getTopRatedMovies() : MutableLiveData<Resource<MovesResponse>>
             = homeApi.getTopRatedMovies()
 
-    private val homeApi by lazy { HomeApiProvider() }
+
 
 }

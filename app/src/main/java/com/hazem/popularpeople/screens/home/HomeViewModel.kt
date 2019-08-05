@@ -5,8 +5,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.screens.home.data.*
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel @Inject constructor(): ViewModel() {
+
+    @Inject
+    lateinit var  homeRepository:HomeRepository
     // save the request state [currentPage - totalPages - searchQuery ...]
     var apiHelper = NetworkHelper()
     // popular persons live data will be used to handle listing and searching for people
@@ -147,6 +151,5 @@ class HomeViewModel : ViewModel() {
     }
 
 
-private val homeRepository by lazy { HomeRepository() }
 
 }
