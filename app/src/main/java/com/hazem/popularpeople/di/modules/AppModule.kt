@@ -6,6 +6,7 @@ import com.hazem.popularpeople.core.PopularPeopleApplication
 import com.hazem.popularpeople.core.network.API_KEY_VALUE
 import com.hazem.popularpeople.core.network.ApiEndPoints
 import com.hazem.popularpeople.core.network.ApiQueryParams
+import com.hazem.popularpeople.core.network.RxErrorHandlingCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -20,7 +21,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideRetrofitClient(): Retrofit{
+    fun provideRetrofitClient(adapterFactory: RxErrorHandlingCallAdapterFactory): Retrofit{
         val gSonParser = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
             .create()!!
@@ -86,6 +87,12 @@ class AppModule {
             .baseUrl(ApiEndPoints.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gSonParser))
+            .addCallAdapterFactory(adapterFactory)
             .build()
+    }
+    @Singleton
+    @Provides
+    internal fun provideRxErrorHandlingCallAdapterFactory(): RxErrorHandlingCallAdapterFactory {
+        return RxErrorHandlingCallAdapterFactory.create()
     }
 }

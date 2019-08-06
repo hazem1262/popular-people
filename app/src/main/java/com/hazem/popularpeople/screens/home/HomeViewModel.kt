@@ -4,10 +4,13 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.hazem.popularpeople.core.network.Resource
+import com.hazem.popularpeople.core.viewModel.BaseViewModel
 import com.hazem.popularpeople.screens.home.data.*
+import io.reactivex.functions.Consumer
+import java.lang.Exception
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(): ViewModel() {
+class HomeViewModel @Inject constructor(): BaseViewModel() {
 
     @Inject
     lateinit var  homeRepository:HomeRepository
@@ -45,48 +48,54 @@ class HomeViewModel @Inject constructor(): ViewModel() {
     }
 
     private fun getPopularPersons(){
-        popularPersons.addSource(homeRepository.getPopularPersons(apiHelper.currentPage++)){
-            isScrollingBlocked = false
-            if (it != null && it.status == Resource.Status.SUCCESS){
+
+        subscribe(
+            homeRepository.getPopularPersons(apiHelper.currentPage++),
+            Consumer{
+                isScrollingBlocked = false
                 // set the total number of pages
-                apiHelper.totalPages = it.data?.totalPages?:0
+                apiHelper.totalPages = it?.totalPages?:0
                 if (popularPersons.value?.data != null){
                     tempData = popularPersons.value?.data
                 }
-                tempData?.addAll(it.data?.results?: arrayListOf())
-                popularPersons.postValue(Resource.success(tempData?:it.data?.results!!))
-            } else{
+                tempData?.addAll(it?.results?: arrayListOf())
+                popularPersons.postValue(Resource.success(tempData?:it?.results!!))
+            },
+            Consumer {
                 apiHelper.currentPage--   //reduce the current page again
-                popularPersons.postValue(Resource.error(it.exception))
+                popularPersons.postValue(Resource.error(Exception(it)))
             }
-        }
+        )
+
     }
 
     private fun searchPopularPersons(){
-        if (apiHelper.searchQuery.isNotEmpty()){
-            apiHelper.isSearchStarted = true        //  this check to handle not to reset browse observable untill search start
-            popularPersons.addSource(homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery)){
-                isScrollingBlocked = false
-                if (it != null && it.status == Resource.Status.SUCCESS){
-                    if (popularPersons.value?.data != null){
-                        tempData = popularPersons.value?.data
-                    }
-                    // set the total number of pages
-                    apiHelper.totalPages = it.data?.totalPages?:0
-                    tempData?.addAll(it.data?.results!!)
-                    val toBeSendData = if (tempData == null || apiHelper.currentPage == 2){
-                        it.data?.results!!
-                    }else{
-                        tempData
-                    }
 
-                    popularPersons.postValue(Resource.success(toBeSendData))
-                } else{
-                    apiHelper.currentPage--   //reduce the current page again
-                    popularPersons.postValue(Resource.error(it.exception))
+        subscribe(
+            homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery),
+            Consumer {
+                isScrollingBlocked = false
+                // set the total number of pages
+                apiHelper.totalPages = it?.totalPages?:0
+                if (popularPersons.value?.data != null){
+                    tempData = popularPersons.value?.data
                 }
+
+                tempData?.addAll(it?.results!!)
+                val toBeSendData = if (tempData == null || apiHelper.currentPage == 2){
+                    it?.results!!
+                }else{
+                    tempData
+                }
+
+                popularPersons.postValue(Resource.success(toBeSendData))
+            },
+            Consumer {
+                apiHelper.currentPage--   //reduce the current page again
+                popularPersons.postValue(Resource.error(Exception(it)))
             }
-        }
+        )
+
     }
 
     private fun getTopRated() {
