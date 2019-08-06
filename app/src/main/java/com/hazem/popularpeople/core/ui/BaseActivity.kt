@@ -2,17 +2,12 @@ package com.hazem.popularpeople.core.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.network.ConnectivityReceiver
 import com.hazem.popularpeople.di.components.AppComponent
 import com.hazem.popularpeople.di.components.DaggerAppComponent
 import com.tapadoo.alerter.Alerter
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
 import java.lang.Exception
-import javax.inject.Inject
 
 open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener{
 
