@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [AndroidInjectionModule::class, AppModule::class, ViewModelModule::class, ActivitiesModule::class])
+@Component(modules = [AndroidInjectionModule::class, AppModule::class, ViewModelModule::class, ActivitiesModule::class, HomeModule::class, DetailsModule::class])
 interface AppComponent {
     fun inject(app: PopularPeopleApplication)
 }
