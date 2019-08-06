@@ -63,4 +63,9 @@ dependencies {
     kapt rootProject.ext.aptLibraries.daggerCompiler
     kapt rootProject.ext.aptLibraries.daggerProcessor
 
+    //rx
+    implementation rootProject.ext.libraries.rxJava
+    implementation rootProject.ext.libraries.rxAndroid
+    implementation rootProject.ext.libraries.rxRetrofitAdapter
+
 }

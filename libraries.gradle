@@ -10,6 +10,10 @@ ext{
     alerterVersion         = "4.0.0"
     //dagger
     daggerVersion          = "2.16"
+    //rx
+    rxRetrofitAdapter      = "2.5.0"
+    rxandroid              = "2.1.1"
+    rxjava                 = "2.2.8"
 
     libraries = [
             retrofit             : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -27,6 +31,10 @@ ext{
             dagger               : "com.google.dagger:dagger:${daggerVersion}",
             daggerAndroid        : "com.google.dagger:dagger:${daggerVersion}",
             daggerAndroidSupport : "com.google.dagger:dagger-android-support:${daggerVersion}",
+            rxJava               : "io.reactivex.rxjava2:rxjava:${rxjava}",
+            rxAndroid            : "io.reactivex.rxjava2:rxandroid:${rxandroid}",
+            rxRetrofitAdapter    : "com.squareup.retrofit2:adapter-rxjava2:${rxRetrofitAdapter}"
+
 
     ]
 

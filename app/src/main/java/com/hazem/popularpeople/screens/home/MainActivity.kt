@@ -63,14 +63,30 @@ class MainActivity : BaseActivity(), DetailsNavigation{
 
     }
 
-    private fun reloadData() {
-        refreshLayout.setOnRefreshListener {
-            // only refresh data in case of Browse
-            if (viewModel.apiHelper.dataType == DataType.Browse){
-                viewModel.resetObservable(viewModel.apiHelper.dataType, forceReset = true)
+    private fun registerObservers() {
+        viewModel.popularPersons?.observe(this, Observer {
+            if (viewModel.apiHelper.currentPage <= 2 && it.data?.size?:0 > 0){
+                skeleton.hide()
+                popularList.adapter = personsAdapter
             }
-            refreshLayout.isRefreshing = false
+            if (it?.status == Resource.Status.SUCCESS ){
+                personsAdapter.insertPersons(it.data!!)
+            } else if (it?.status == Resource.Status.ERROR){
+                handleServerError(it?.exception!!)
+            }
+        })
+        if(intent.getBooleanExtra(FROM_STARRED, false)){
+            viewModel.topRatedMovies.observe(this, Observer {  })
+            viewModel.topRatedMovieCast.observe(this, Observer {  })
         }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getData() {
+        // start loading
+        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+        skeleton.show()
+        viewModel.getData(intent.getBooleanExtra(FROM_STARRED, false))
     }
 
     private fun handleInfiniteResults() {
@@ -90,31 +106,21 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         }
     }
 
-    @SuppressLint("ResourceType")
-    private fun getData() {
-        // start loading
-        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
-        skeleton.show()
-        viewModel.getData(intent.getBooleanExtra(FROM_STARRED, false))
-    }
-
-    private fun registerObservers() {
-        viewModel.popularPersons?.observe(this, Observer {
-            if (viewModel.apiHelper.currentPage <= 2 && it.data?.size?:0 > 0){
-                skeleton.hide()
-                popularList.adapter = personsAdapter
+    private fun reloadData() {
+        refreshLayout.setOnRefreshListener {
+            // only refresh data in case of Browse
+            if (viewModel.apiHelper.dataType == DataType.Browse){
+                viewModel.resetObservable(viewModel.apiHelper.dataType, forceReset = true)
             }
-            if (it?.status == Resource.Status.SUCCESS ){
-                personsAdapter.insertPersons(it.data!!)
-            } else if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }
-        })
-        if(intent.getBooleanExtra(FROM_STARRED, false)){
-            viewModel.topRatedMovies.observe(this, Observer {  })
-            viewModel.topRatedMovieCast.observe(this, Observer {  })
+            refreshLayout.isRefreshing = false
         }
     }
+
+
+
+
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 //        do not show menu items in starred screen
