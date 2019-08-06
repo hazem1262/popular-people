@@ -65,15 +65,16 @@ class MainActivity : BaseActivity(), DetailsNavigation{
 
     private fun registerObservers() {
         viewModel.popularPersons?.observe(this, Observer {
-            if (viewModel.apiHelper.currentPage <= 2 && it.data?.size?:0 > 0){
+            if (viewModel.apiHelper.currentPage <= 2 && it?.size?:0 > 0){
                 skeleton.hide()
                 popularList.adapter = personsAdapter
             }
-            if (it?.status == Resource.Status.SUCCESS ){
-                personsAdapter.insertPersons(it.data!!)
+            personsAdapter.insertPersons(it!!)
+            /*if (it?.status == Resource.Status.SUCCESS ){
+
             } else if (it?.status == Resource.Status.ERROR){
                 handleServerError(it?.exception!!)
-            }
+            }*/
         })
         if(intent.getBooleanExtra(FROM_STARRED, false)){
             viewModel.topRatedMovies.observe(this, Observer {  })

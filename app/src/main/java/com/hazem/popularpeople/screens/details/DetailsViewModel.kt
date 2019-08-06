@@ -1,44 +1,43 @@
 package com.hazem.popularpeople.screens.details
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
 import com.hazem.popularpeople.screens.details.data.PersonDetails
 import com.hazem.popularpeople.screens.details.data.PersonImages
-import com.hazem.popularpeople.core.network.Resource
+import com.hazem.popularpeople.core.viewModel.BaseViewModel
 import com.hazem.popularpeople.screens.details.data.DetailsRepository
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Consumer
 import javax.inject.Inject
 
-class DetailsViewModel @Inject constructor(): ViewModel() {
+class DetailsViewModel @Inject constructor(): BaseViewModel() {
     @Inject
     lateinit var detailsRepository : DetailsRepository
-    var images: MediatorLiveData<Resource<PersonImages>> = MediatorLiveData()
-    var header: MediatorLiveData<Resource<PersonDetails>> = MediatorLiveData()
-    var detailsList : MutableList<Any> = arrayListOf()
-    var isRequestSend = false  // to handle if configuration changed while request was send before
+
+    var detailsList : MutableLiveData<MutableList<Any>> = MutableLiveData()
     fun getPersonDetails(personId:Int){
-        // check to not send requests after configuration change
-        if (detailsList.isNullOrEmpty() && !isRequestSend){
-            val detailsObserver =
-                Observer<Resource<PersonDetails>> {
-                    if (it != null && it.status == Resource.Status.SUCCESS){
-                        detailsList.add(0, it.data!!)
-                    }
-                    header.postValue(
-                        Resource.success(it.data)
-                    )
-                }
-            images.addSource(detailsRepository.getPersonImages(personId)){
-                if (it != null && it.status == Resource.Status.SUCCESS){
-                    images.postValue(Resource.success(it.data))
-                    detailsList.addAll(it.data?.profiles?: arrayListOf())
-                    header.addSource(detailsRepository.getPersonDetails(personId), detailsObserver)
-                } else{
-                    images.postValue(Resource.error(it.exception))
-                }
+        detailsList.value?.clear()
+        subscribe(
+            Single.zip(detailsRepository.getPersonDetails(personId), detailsRepository.getPersonImages(personId), BiFunction<PersonDetails, PersonImages, DetailsResponseWrapper>{
+                details, image -> createDetailsResponseWrapper(details, image)
+            }),
+            Consumer {
+                detailsList.value = arrayListOf()
+                detailsList.value?.add(0, it.details)
+                detailsList.value?.addAll(it.image?.profiles?: arrayListOf())
+                detailsList.postValue(detailsList.value)
+            },
+            Consumer {
+
             }
-        }
+        )
+    }
+
+    private fun createDetailsResponseWrapper(details: PersonDetails, image: PersonImages):DetailsResponseWrapper {
+        return DetailsResponseWrapper(image, details)
     }
 
 
 }
+
+data class DetailsResponseWrapper(val image:PersonImages, val details:PersonDetails)

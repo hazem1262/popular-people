@@ -21,40 +21,12 @@ class HomeApiProvider(var api : HomeRetrofitInterface) {
 
 
 
-    fun getTopRatedMovies() : MutableLiveData<Resource<MovesResponse>>{
-        val data = MutableLiveData<Resource<MovesResponse>>()
-        api.getTopRatedMovies().enqueue(
-            object : Callback<MovesResponse>{
-                override fun onFailure(call: Call<MovesResponse>, t: Throwable) {
-                    val exception = Exception(t)
-                    data.value = Resource.error(exception)
-                }
+    fun getTopRatedMovies() : Single<MovesResponse>
+        = api.getTopRatedMovies()
 
-                override fun onResponse(call: Call<MovesResponse>, response: Response<MovesResponse>) {
-                    data.value = Resource.create(response)
-                }
-            }
-        )
-        return data
-    }
 
-    fun getMovieCast(movieId:String): MutableLiveData<Resource<CastingResponse>>{
-        val data = MutableLiveData<Resource<CastingResponse>>()
-        api.getMovieCast(movieId).enqueue(
-            object : Callback<CastingResponse>{
-                override fun onResponse(call: Call<CastingResponse>, response: Response<CastingResponse>) {
-                    data.value = Resource.create(response)
-                }
-
-                override fun onFailure(call: Call<CastingResponse>, t: Throwable) {
-                    val exception = Exception(t)
-                    data.value = Resource.error(exception)
-                }
-
-            }
-        )
-        return data
-    }
+    fun getMovieCast(movieId:String): Single<CastingResponse>
+        = api.getMovieCast(movieId)
     interface HomeRetrofitInterface{
         @GET(ApiEndPoints.POPULAR_PERSONS)
         fun getPopularPersons(
@@ -70,12 +42,12 @@ class HomeApiProvider(var api : HomeRetrofitInterface) {
         @GET(ApiEndPoints.TOP_RATED_MOVIES)
         fun getTopRatedMovies(
 
-        ) : Call<MovesResponse>
+        ) : Single<MovesResponse>
 
         @GET(ApiEndPoints.MOVIE_CASTING)
         fun getMovieCast(
             @Path(ApiPaths.MOVIE_ID) movieId : String
-        ) : Call<CastingResponse>
+        ) : Single<CastingResponse>
     }
 
 

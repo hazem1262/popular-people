@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.core.viewModel.BaseViewModel
 import com.hazem.popularpeople.screens.home.data.*
+import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.functions.Consumer
+import io.reactivex.functions.Function
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -17,8 +20,7 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
     // save the request state [currentPage - totalPages - searchQuery ...]
     var apiHelper = NetworkHelper()
     // popular persons live data will be used to handle listing and searching for people
-    var popularPersons : MediatorLiveData<Resource<MutableList<PopularPersons.PopularPerson>>> = MediatorLiveData()
-    var tempData : MutableList<PopularPersons.PopularPerson>? = arrayListOf()
+    var popularPersons : MediatorLiveData<MutableList<PopularPersons.PopularPerson>> = MediatorLiveData()
     // to prevent scrolling events from sending multiple requests
     var isScrollingBlocked : Boolean = false
 
@@ -53,17 +55,19 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
             homeRepository.getPopularPersons(apiHelper.currentPage++),
             Consumer{
                 isScrollingBlocked = false
-                // set the total number of pages
-                apiHelper.totalPages = it?.totalPages?:0
-                if (popularPersons.value?.data != null){
-                    tempData = popularPersons.value?.data
+                // handle if first page [popularPersons?.value need to be initialized]or not
+                if (apiHelper.currentPage == 2){
+                    // set the total number of pages
+                    apiHelper.totalPages = it?.totalPages?:0
+                    popularPersons?.value = it?.results?: arrayListOf()
+                }else{
+                    popularPersons?.value?.addAll(it?.results?: arrayListOf())
                 }
-                tempData?.addAll(it?.results?: arrayListOf())
-                popularPersons.postValue(Resource.success(tempData?:it?.results!!))
+                popularPersons.postValue(popularPersons?.value)
             },
             Consumer {
                 apiHelper.currentPage--   //reduce the current page again
-                popularPersons.postValue(Resource.error(Exception(it)))
+//                popularPersons.postValue(Resource.error(Exception(it)))
             }
         )
 
@@ -75,31 +79,26 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
             homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery),
             Consumer {
                 isScrollingBlocked = false
-                // set the total number of pages
-                apiHelper.totalPages = it?.totalPages?:0
-                if (popularPersons.value?.data != null){
-                    tempData = popularPersons.value?.data
-                }
-
-                tempData?.addAll(it?.results!!)
-                val toBeSendData = if (tempData == null || apiHelper.currentPage == 2){
-                    it?.results!!
+                // handle if first page [popularPersons?.value need to be initialized]or not
+                if (apiHelper.currentPage == 2){
+                    // set the total number of pages
+                    apiHelper.totalPages = it?.totalPages?:0
+                    popularPersons?.value = it?.results?: arrayListOf()
                 }else{
-                    tempData
+                    popularPersons.value?.addAll(it?.results!!)
                 }
-
-                popularPersons.postValue(Resource.success(toBeSendData))
+                popularPersons.postValue(popularPersons.value)
             },
             Consumer {
                 apiHelper.currentPage--   //reduce the current page again
-                popularPersons.postValue(Resource.error(Exception(it)))
+//                popularPersons.postValue(Resource.error(Exception(it)))
             }
         )
 
     }
 
     private fun getTopRated() {
-        var castingObserver =
+        /*var castingObserver =
             Observer<Resource<CastingResponse>>{ it ->
                 if (it != null && it.status == Resource.Status.SUCCESS){
                     it.data?.cast?.forEach { cast ->
@@ -119,12 +118,14 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
                                 profilePath = it.profilePath,
                                 name = it.name)
                         }.toMutableList()
-                        popularPersons.postValue(Resource.success(mapToPopularPersons))
+//                        popularPersons.postValue(Resource.success(mapToPopularPersons))
                     }
                 } else{
-                    popularPersons.postValue(Resource.error(it.exception))
+//                    popularPersons.postValue(Resource.error(it.exception))
                 }
             }
+
+
         topRatedMovies.addSource(homeRepository.getTopRatedMovies()){ it ->
             if (it != null){
                 totalNumberOfMovies = it.data?.results?.size?:0
@@ -132,7 +133,43 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
                     topRatedMovieCast.addSource(homeRepository.getMovieCast(it?.id.toString()), castingObserver)
                 }
             }
-        }
+        }*/
+
+        subscribe(
+            homeRepository.getTopRatedMovies(),
+            Consumer {
+                totalNumberOfMovies = it?.results?.size?:0
+//                var moviesCast: ArrayList<Single<CastingResponse>>  = arrayListOf()
+                it?.results?.forEach{ it ->
+                    subscribe(
+                        homeRepository.getMovieCast(it?.id.toString()),
+                        Consumer { response ->
+                            response?.cast?.forEach { cast ->
+                                if (topRatedMap.containsKey(cast)){
+                                    topRatedMap[cast!!] = topRatedMap[cast!!]!! + 1
+                                }else {
+                                    topRatedMap[cast!!] = 1
+                                }
+                            }
+                            initialNumberOfMovies++
+                            if (initialNumberOfMovies == totalNumberOfMovies){
+                                val mapToPopularPersons = topRatedMap.filter { entry ->
+                                    entry.value > 1
+                                }.keys.toMutableList().map { cast ->
+                                    PopularPersons.PopularPerson(
+                                        id = cast.id,
+                                        profilePath = cast.profilePath,
+                                        name = cast.name)
+                                }.toMutableList()
+                        popularPersons.postValue(mapToPopularPersons)
+                            }
+                        },
+                        Consumer {  }
+                    )
+                }
+            },
+            Consumer {  }
+        )
     }
 
 
@@ -152,7 +189,7 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
             apiHelper.currentPage = 1
             apiHelper.totalPages = 10
             apiHelper.searchQuery = searchQuery?: ""
-            popularPersons.value = Resource.success(arrayListOf())
+//            popularPersons.value = Resource.success(arrayListOf())
             apiHelper.dataType = dataType
             apiHelper.isSearchStarted = false
             getData()

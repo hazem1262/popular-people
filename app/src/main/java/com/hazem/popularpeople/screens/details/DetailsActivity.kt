@@ -63,20 +63,11 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
     }
 
     private fun registerObservers(){
-        viewModel.images.observe(this, Observer {
-            if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }
+        viewModel.detailsList.observe(this, Observer {
+            skeleton.hide()
+            detailsList.adapter = detailsAdapter
+            detailsAdapter.insertDetails(viewModel.detailsList?.value!!)
         } )
-        viewModel.header.observe(this, Observer {
-            if (it?.status ==  Resource.Status.SUCCESS){
-                skeleton.hide()
-                detailsList.adapter = detailsAdapter
-                detailsAdapter.insertDetails(viewModel.detailsList)
-            }else if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }
-        })
     }
 
     @SuppressLint("ResourceType")
