@@ -12,6 +12,7 @@ import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.ui.BaseActivity
 import com.hazem.popularpeople.screens.details.IMAGE_HEIGHT
 import com.hazem.popularpeople.screens.details.IMAGE_WIDTH
+import com.hazem.popularpeople.screens.home.HomeViewModel
 import com.hazem.popularpeople.util.downloadFile
 import com.hazem.popularpeople.util.getOriginalImageUrl
 import com.karumi.dexter.Dexter
@@ -23,7 +24,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlin.annotation.Target as Target1
 
 
-class ImageFullDisplay : BaseActivity() {
+class ImageFullDisplay : BaseActivity<HomeViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

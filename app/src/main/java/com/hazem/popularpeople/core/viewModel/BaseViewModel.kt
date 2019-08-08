@@ -1,35 +1,36 @@
 package com.hazem.popularpeople.core.viewModel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hazem.popularpeople.core.network.ConnectivityReceiver
 import com.hazem.popularpeople.core.network.RetrofitException
-import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.Single
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
+import io.reactivex.subjects.PublishSubject
+import org.reactivestreams.Publisher
+
 
 abstract class BaseViewModel : ViewModel() {
 
-    val compositeDisposable = CompositeDisposable()
+    @Inject
+    lateinit var context: Context
+
+    private val compositeDisposable = CompositeDisposable()
     val error = MutableLiveData<String>()
     val loading = MutableLiveData<Boolean>()
+    private var disposable: Disposable? = null
+    val retrySubject = PublishSubject.create<Any>()
 
     private fun getRetrofitError(exception: Throwable) {
         if (exception is RetrofitException) {
-            when (exception.getKind()) {
-
-                RetrofitException.Kind.NETWORK ->
-                    error.value = exception.message ?: ""
-
-                RetrofitException.Kind.HTTP ->
-                    error.value = exception.message ?: ""
-
-                RetrofitException.Kind.UNEXPECTED ->
-                    error.value = exception.message ?: ""
-            }
+            error.postValue(exception.message ?: "")
         }
     }
 
@@ -55,24 +56,38 @@ abstract class BaseViewModel : ViewModel() {
     fun <T> subscribe(
             observable: Single<T>,
             success: Consumer<T>,
-            error: Consumer<Throwable>,
+            requestError: Consumer<Throwable>,
             subscribeScheduler: Scheduler = Schedulers.io(),
             observeOnMainThread: Boolean = true) {
 
         val observerScheduler =
                 if (observeOnMainThread) AndroidSchedulers.mainThread()
                 else subscribeScheduler
+        disposable = observable
+            .subscribeOn(subscribeScheduler)
+            .observeOn(observerScheduler)
 
-        compositeDisposable.add(observable
-                .subscribeOn(subscribeScheduler)
-                .observeOn(observerScheduler)
-                .compose { single ->
-                    composeSingle<T>(single)
-                }
-                .subscribe(success, error))
+            .compose { single ->
+                composeSingle<T>(single)
+            }
+            .retryWhen {
+               retrySubject.observeOn(Schedulers.io()).toFlowable(BackpressureStrategy.LATEST)
+            }
+            .subscribe(success, requestError)
 
+        sendRequest()
     }
 
+    private fun sendRequest(){
+        if (ConnectivityReceiver.isConnectedOrConnecting(context)){
+            if (disposable != null){
+                compositeDisposable.remove(disposable!!)
+                compositeDisposable.add(disposable!!)
+            }
+        }else {
+            error.postValue(NO_NETWORK_AVAILABLE)
+        }
+    }
     private fun <T> composeSingle(single: Single<T>): Single<T> {
         return single
                 .doOnError {
@@ -84,9 +99,21 @@ abstract class BaseViewModel : ViewModel() {
                 .doAfterTerminate {
                     loading.postValue(false)
                 }
+                .doAfterSuccess { disposable = null }
     }
 
     fun clearSubscription() {
         if (compositeDisposable.isDisposed.not()) compositeDisposable.clear()
+        disposable?.dispose()
+    }
+    fun retry(msg:String) {
+
+        if (msg == NO_NETWORK_AVAILABLE){
+            sendRequest()
+        }else{
+            retrySubject.onNext(1)
+        }
     }
 }
+
+const val NO_NETWORK_AVAILABLE = "no network available"

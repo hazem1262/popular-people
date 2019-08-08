@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException
 import java.lang.reflect.Type
+import java.net.HttpURLConnection
 
 class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
 
@@ -47,7 +48,9 @@ class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory() {
             // We had non-200 http error
             if (throwable is HttpException) {
                 val response = throwable.response()
-
+                if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED){
+                    return RetrofitException.unAuthorizedError(throwable)
+                }
                 return RetrofitException.httpError(response.raw().request().url().toString(), response, _retrofit)
 
             }

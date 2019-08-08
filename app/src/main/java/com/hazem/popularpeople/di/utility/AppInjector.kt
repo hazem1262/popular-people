@@ -35,7 +35,7 @@ object AppInjector {
     lateinit var appComponent: AppComponent
 
     fun init(popularApp: PopularPeopleApplication) {
-        appComponent = DaggerAppComponent.builder()
+        appComponent = DaggerAppComponent.builder().context(popularApp)
                 .build()
 
         appComponent.inject(popularApp)
@@ -80,7 +80,7 @@ object AppInjector {
                                 f: Fragment,
                                 savedInstanceState: Bundle?
                         ) {
-                            AndroidSupportInjection.inject(f)
+//                            AndroidSupportInjection.inject(f)
                         }
                     }, true
             )

@@ -9,4 +9,109 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
+    <!--full screen dialog-->
+    <style name="fullScreenDialog" parent="AppTheme">
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="DialogAnimationDownUp">
+        <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+    </style>
+    <style name="dialogue_card">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/background_teardrop_card</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">15dp</item>
+    </style>
+    <style name="dialogue_gradient_overlay">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/background_gradient</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingTop">70dp</item>
+        <item name="android:paddingBottom">40dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="tammText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/accentBlueDark</item>
+    </style>
+    <style name="itemValue" parent="tammText">
+        <item name="android:textSize">@dimen/textSmallish</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--Headers and Titles-->
+    <style name="tammText.CSBold" parent="tammText">
+    </style>
+
+    <style name="tammText.CSBold.XLarge" parent="tammText.CSBold">
+        <item name="android:textSize">@dimen/textTitleXLarge</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!--Regular Text-->
+    <style name="tammText.RR" parent="tammText">
+    </style>
+
+    <style name="tammText.RR.Small" parent="tammText.RR">
+        <item name="android:textSize">@dimen/textSmallish</item>
+    </style>
+
+    <style name="tammText.RR.Medium" parent="tammText.RR">
+        <item name="android:textSize">@dimen/textMedium</item>
+    </style>
+    <!--Secondary action button (Turquoise)-->
+    <style name="buttonActionSecondaryLargeMatch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/roundedButtonHeightLarge</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:textColor">@color/accentBlueGreen</item>
+        <item name="android:textSize">@dimen/textMedium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fillColor">@color/accentCyanLight</item>
+        <item name="rippleColor">@color/accentTurquoiseBlue</item>
+        <item name="strokeColor">@color/accentTurquoiseBlue</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    <!--Primary action button (yellow)-->
+    <style name="buttonActionPrimaryLargeMatch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">7dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingEnd">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">@dimen/roundedButtonHeightLarge</item>
+        <item name="android:textColor">@color/accentBlueDark</item>
+        <item name="android:textSize">@dimen/textMedium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fillColor">@color/accentYellowCanary</item>
+        <item name="rippleColor">@color/accentPeach</item>
+        <item name="strokeColor">@color/accentYellowCanary</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+    <style name="buttonActionPrimaryLargeWeight" parent="buttonActionPrimaryLargeMatch">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="buttonActionSecondaryLargeWeight" parent="buttonActionSecondaryLargeMatch">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
 </resources>

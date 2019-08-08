@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	style="@style/dialogue_gradient_overlay"
+	>
+
+	<LinearLayout style="@style/dialogue_card">
+
+		<ScrollView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="20dp"
+			>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:gravity="center"
+				>
+
+				<FrameLayout
+					android:layout_width="120dp"
+					android:layout_height="120dp"
+					android:padding="15dp"
+					>
+
+					<!--<ae.government.tamm.core.widgets.IconFontView-->
+						<!--android:layout_width="wrap_content"-->
+						<!--android:layout_height="wrap_content"-->
+						<!--android:layout_gravity="center|top"-->
+						<!--android:text="@string/iconWarning"-->
+						<!--android:textColor="@color/accentRed"-->
+						<!--android:textSize="86dp"-->
+						<!--tools:fontFamily="@font/tamm"-->
+						<!---->
+						<!--tools:ignore="SpUsage" />-->
+
+				</FrameLayout>
+
+				<TextView
+					android:text="@string/something_went_wrong"
+					android:layout_marginBottom="30dp"
+					android:textAlignment="center"
+					style="@style/tammText.CSBold.XLarge"/>
+
+				<TextView
+					android:id="@+id/textViewErrorMessage"
+					style="@style/tammText.RR.Medium"
+					android:layout_marginBottom="30dp"
+					android:focusable="true"
+					android:text="@string/errorDialogMessage"
+					android:textAlignment="center"
+					/>
+
+				<!--Buttons-->
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					>
+
+					<Button
+						android:id="@+id/buttonCancel"
+						style="@style/buttonActionSecondaryLargeWeight"
+						android:layout_marginEnd="7dp"
+						android:text="@string/cancel"
+						/>
+
+					<Button
+						android:id="@+id/okButton"
+						style="@style/buttonActionPrimaryLargeWeight"
+						android:layout_marginStart="7dp"
+						android:text="@string/retry"
+						/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</ScrollView>
+
+	</LinearLayout>
+
+</LinearLayout>
+

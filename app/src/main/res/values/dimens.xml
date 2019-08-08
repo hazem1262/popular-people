@@ -6,4 +6,13 @@
     <dimen name="app_text_size_large">22sp</dimen>
     <integer name="animationDuration">500</integer>
     <dimen name="appElevation">2dp</dimen>
+
+    <dimen name="cornerRadiusMedium">10dp</dimen>
+    <dimen name="cornerRadiusSmall">3dp</dimen>
+    <dimen name="textMedium">16sp</dimen>
+    <dimen name="textSmallish">14sp</dimen>
+    <dimen name="textTitleXLarge">26sp</dimen>
+    <dimen name="roundedButtonHeightLarge">50dp</dimen>
+
+
 </resources>

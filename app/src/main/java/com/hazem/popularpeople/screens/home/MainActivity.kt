@@ -7,19 +7,15 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.hazem.popularpeople.core.network.Resource
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.ui.BaseActivity
-import com.hazem.popularpeople.di.utility.ViewModelFactory
 import com.hazem.popularpeople.screens.home.data.PopularPersons
 import com.hazem.popularpeople.screens.details.DetailsActivity
 import com.hazem.popularpeople.screens.home.data.DataType
 import com.hazem.popularpeople.util.showSkeleton
-import javax.inject.Inject
 
 const val PERSON_ID    = "personID"
 const val PERSON_NAME  = "personName"
@@ -28,22 +24,14 @@ const val FROM_STARRED = "FROM_STARRED"
 * this activity will be responsible for display [List - Search - Star] people
 * intent.getBooleanExtra(FROM_STARRED) this check to know if it is from star btn
 * */
-class MainActivity : BaseActivity(), DetailsNavigation{
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
 
     private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
-    lateinit var viewModel: HomeViewModel
     private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProviders
-            .of(this, viewModelFactory)
-            .get(HomeViewModel::class.java)
-        // observe to the result from search or list data
         registerObservers()
 
         getData()
@@ -70,16 +58,8 @@ class MainActivity : BaseActivity(), DetailsNavigation{
                 popularList.adapter = personsAdapter
             }
             personsAdapter.insertPersons(it!!)
-            /*if (it?.status == Resource.Status.SUCCESS ){
 
-            } else if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }*/
         })
-        if(intent.getBooleanExtra(FROM_STARRED, false)){
-            viewModel.topRatedMovies.observe(this, Observer {  })
-            viewModel.topRatedMovieCast.observe(this, Observer {  })
-        }
     }
 
     @SuppressLint("ResourceType")
@@ -116,11 +96,6 @@ class MainActivity : BaseActivity(), DetailsNavigation{
             refreshLayout.isRefreshing = false
         }
     }
-
-
-
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

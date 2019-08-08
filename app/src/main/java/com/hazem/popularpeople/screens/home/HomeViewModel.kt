@@ -24,9 +24,6 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
     // to prevent scrolling events from sending multiple requests
     var isScrollingBlocked : Boolean = false
 
-    // handle top movies response
-    var topRatedMovies    : MediatorLiveData<Resource<MutableList<MovesResponse>>> = MediatorLiveData()
-    var topRatedMovieCast : MediatorLiveData<Resource<MutableList<CastingResponse>>> = MediatorLiveData()
     var topRatedMap: HashMap<CastingResponse.Cast, Int> = HashMap()
     var initialNumberOfMovies = 0
     var totalNumberOfMovies  = 20   // just initial value and it is refilled from api response
@@ -79,6 +76,7 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
             homeRepository.searchPopularPersons(apiHelper.currentPage++, apiHelper.searchQuery),
             Consumer {
                 isScrollingBlocked = false
+                apiHelper.isSearchStarted = true   // this check to handle not to reset browse observable until search start
                 // handle if first page [popularPersons?.value need to be initialized]or not
                 if (apiHelper.currentPage == 2){
                     // set the total number of pages
@@ -98,43 +96,6 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
     }
 
     private fun getTopRated() {
-        /*var castingObserver =
-            Observer<Resource<CastingResponse>>{ it ->
-                if (it != null && it.status == Resource.Status.SUCCESS){
-                    it.data?.cast?.forEach { cast ->
-                        if (topRatedMap.containsKey(cast)){
-                            topRatedMap[cast!!] = topRatedMap[cast!!]!! + 1
-                        }else {
-                            topRatedMap[cast!!] = 1
-                        }
-                    }
-                    initialNumberOfMovies++
-                    if (initialNumberOfMovies == totalNumberOfMovies){
-                        val mapToPopularPersons = topRatedMap.filter {
-                            it.value > 1
-                        }.keys.toMutableList().map {
-                            PopularPersons.PopularPerson(
-                                id = it.id,
-                                profilePath = it.profilePath,
-                                name = it.name)
-                        }.toMutableList()
-//                        popularPersons.postValue(Resource.success(mapToPopularPersons))
-                    }
-                } else{
-//                    popularPersons.postValue(Resource.error(it.exception))
-                }
-            }
-
-
-        topRatedMovies.addSource(homeRepository.getTopRatedMovies()){ it ->
-            if (it != null){
-                totalNumberOfMovies = it.data?.results?.size?:0
-                it.data?.results?.forEach {
-                    topRatedMovieCast.addSource(homeRepository.getMovieCast(it?.id.toString()), castingObserver)
-                }
-            }
-        }*/
-
         subscribe(
             homeRepository.getTopRatedMovies(),
             Consumer {
@@ -184,12 +145,12 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
 
     // reset the observable after changing the state [search - browse]
     fun resetObservable(dataType : DataType, searchQuery:String? = "", forceReset:Boolean = false){
-        // do not reset the observable if there is no search done [user click search icon the click back]
+        // do not reset the observable if there is no search done [user click search icon then click back]
         if (dataType == DataType.Search ||dataType == DataType.Star|| (dataType == DataType.Browse && apiHelper.isSearchStarted || forceReset)){
             apiHelper.currentPage = 1
             apiHelper.totalPages = 10
             apiHelper.searchQuery = searchQuery?: ""
-//            popularPersons.value = Resource.success(arrayListOf())
+            popularPersons.value = arrayListOf()
             apiHelper.dataType = dataType
             apiHelper.isSearchStarted = false
             getData()

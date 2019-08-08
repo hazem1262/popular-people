@@ -35,6 +35,10 @@ class RetrofitException(private val _message: String?,
         fun unexpectedError(exception: Throwable): RetrofitException {
             return RetrofitException(exception.message, null, null, Kind.UNEXPECTED, exception, null)
         }
+
+        fun unAuthorizedError(exception: Throwable): RetrofitException {
+            return RetrofitException(exception.message, null, null, Kind.UNAUTHORIZED, exception, null)
+        }
     }
 
     /** The request URL which produced the error. */
@@ -78,6 +82,8 @@ class RetrofitException(private val _message: String?,
     }
 
     enum class Kind {
+        /*to handle if token expires*/
+        UNAUTHORIZED,
         /** An [IOException] occurred while communicating to the server.  */
         NETWORK,
         /** A non-200 HTTP status code was received from the server.  */

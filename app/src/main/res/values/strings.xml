@@ -13,4 +13,8 @@
     <string name="gender">Gender</string>
     <string name="topRated">Top Rated</string>
     <string name="error">general error msg!!</string>
+    <string name="retry">retry</string>
+    <string name="errorDialogMessage">something went wrong</string>
+    <string name="something_went_wrong">some thing went wrong</string>
+    <string name="cancel">cancel</string>
 </resources>
