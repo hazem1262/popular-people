@@ -19,6 +19,8 @@
     <color name="accentCyanLight">#E5F7FA</color>
     <color name="accentYellowCanary">#ffdd00</color>
     <color name="accentPeach">#EE907B</color>
+    <color name="accentRed">#d00000</color>
+
 
 
 </resources>

@@ -17,4 +17,6 @@
     <string name="errorDialogMessage">something went wrong</string>
     <string name="something_went_wrong">some thing went wrong</string>
     <string name="cancel">cancel</string>
+    <string name="iconWarning" translatable="false">&#xe007;</string>
+
 </resources>

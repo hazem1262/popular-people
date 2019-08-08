@@ -27,16 +27,16 @@
 					android:padding="15dp"
 					>
 
-					<!--<ae.government.tamm.core.widgets.IconFontView-->
-						<!--android:layout_width="wrap_content"-->
-						<!--android:layout_height="wrap_content"-->
-						<!--android:layout_gravity="center|top"-->
-						<!--android:text="@string/iconWarning"-->
-						<!--android:textColor="@color/accentRed"-->
-						<!--android:textSize="86dp"-->
-						<!--tools:fontFamily="@font/tamm"-->
-						<!---->
-						<!--tools:ignore="SpUsage" />-->
+					<ae.government.tamm.core.widgets.IconFontView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_gravity="center|top"
+						android:text="@string/iconWarning"
+						android:textColor="@color/accentRed"
+						android:textSize="86dp"
+						tools:fontFamily="@font/tamm"
+
+						tools:ignore="SpUsage" />
 
 				</FrameLayout>
 
