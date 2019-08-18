@@ -26,7 +26,7 @@ abstract class BaseViewModel : ViewModel() {
     val error = MutableLiveData<String>()
     val loading = MutableLiveData<Boolean>()
     private var disposable: Disposable? = null
-    val retrySubject = PublishSubject.create<Any>()
+    private val retrySubject = PublishSubject.create<Any>()
 
     private fun getRetrofitError(exception: Throwable) {
         if (exception is RetrofitException) {

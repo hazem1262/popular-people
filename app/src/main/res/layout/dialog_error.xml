@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	style="@style/dialogue_gradient_overlay"
 	>
@@ -35,7 +34,6 @@
 						android:textColor="@color/accentRed"
 						android:textSize="86dp"
 						tools:fontFamily="@font/tamm"
-
 						tools:ignore="SpUsage" />
 
 				</FrameLayout>

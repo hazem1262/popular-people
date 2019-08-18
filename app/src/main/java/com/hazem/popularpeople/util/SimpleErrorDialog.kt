@@ -2,6 +2,7 @@ package ae.government.tamm.components.shared.dialogs
 
 import android.os.Bundle
 import com.hazem.popularpeople.R
+import com.hazem.popularpeople.util.DialogBase
 import kotlinx.android.synthetic.main.dialog_error.*
 
 

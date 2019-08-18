@@ -1,4 +1,4 @@
-package ae.government.tamm.components.shared.dialogs
+package com.hazem.popularpeople.util
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import com.hazem.popularpeople.R
 
 
 /**
- * Created by caroline.armia on 4/30/2018.
+ * Created by hazem.ashraf on 8/18/2019.
  */
 open class DialogBase : DialogFragment() {
 
