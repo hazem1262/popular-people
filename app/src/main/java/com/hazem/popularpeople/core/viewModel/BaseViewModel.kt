@@ -63,38 +63,31 @@ abstract class BaseViewModel : ViewModel() {
         val observerScheduler =
                 if (observeOnMainThread) AndroidSchedulers.mainThread()
                 else subscribeScheduler
-        disposable = observable
-            .subscribeOn(subscribeScheduler)
-            .observeOn(observerScheduler)
 
-            .compose { single ->
-                composeSingle<T>(single)
-            }
-            .retryWhen {
-               retrySubject.observeOn(Schedulers.io()).toFlowable(BackpressureStrategy.LATEST)
-            }
-            .subscribe(success, requestError)
+        compositeDisposable.add(
+            observable
+                .subscribeOn(subscribeScheduler)
+                .observeOn(observerScheduler)
 
-        sendRequest()
+                .compose { single ->
+                    composeSingle<T>(single)
+                }
+                .retryWhen {
+                    retrySubject.observeOn(Schedulers.io()).toFlowable(BackpressureStrategy.LATEST)
+                }
+                .subscribe(success, requestError)
+        )
     }
 
-    private fun sendRequest(){
-        if (ConnectivityReceiver.isConnectedOrConnecting(context)){
-            if (disposable != null){
-                compositeDisposable.remove(disposable!!)
-                compositeDisposable.add(disposable!!)
-            }
-        }else {
-            error.postValue(NO_NETWORK_AVAILABLE)
-        }
-    }
     private fun <T> composeSingle(single: Single<T>): Single<T> {
         return single
                 .doOnError {
                     getRetrofitError(it)
                 }
                 .doOnSubscribe {
-                    loading.postValue(true)
+                    if (ConnectivityReceiver.isConnectedOrConnecting(context)){
+                        loading.postValue(true)
+                    }
                 }
                 .doAfterTerminate {
                     loading.postValue(false)
@@ -107,12 +100,7 @@ abstract class BaseViewModel : ViewModel() {
         disposable?.dispose()
     }
     fun retry(msg:String) {
-
-        if (msg == NO_NETWORK_AVAILABLE){
-            sendRequest()
-        }else{
-            retrySubject.onNext(1)
-        }
+        retrySubject.onNext(1)
     }
 }
 

@@ -43,8 +43,7 @@ open class BaseActivity<MBaseViewModel : BaseViewModel> : AppCompatActivity(), C
     private fun hideLoading() {
         /*loadingAlter?.apply {
             Alerter.hide()
-        }
-        loadingAlter = null*/
+        }*/
     }
 
     private fun showLoading() {
