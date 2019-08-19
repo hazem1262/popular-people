@@ -1,5 +1,6 @@
 package com.hazem.popularpeople.screens.home.data
 
+import androidx.annotation.MainThread
 import androidx.paging.PageKeyedDataSource
 import com.hazem.popularpeople.screens.home.HomeViewModel
 import io.reactivex.functions.Consumer

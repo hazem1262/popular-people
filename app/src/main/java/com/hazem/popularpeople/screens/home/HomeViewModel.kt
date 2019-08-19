@@ -1,5 +1,6 @@
 package com.hazem.popularpeople.screens.home
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -35,10 +36,11 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
         val config = PagedList.Config.Builder()
             .setPageSize(PAGE_SIZE)
             .setInitialLoadSizeHint(PAGE_SIZE)
-            .setEnablePlaceholders(true)
+            .setEnablePlaceholders(false)
             .build()
         popularPersons = LivePagedListBuilder(popularPersonsDataSourceFactory, config).build()
     }
+
 
 
 

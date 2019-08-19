@@ -27,14 +27,13 @@ const val FROM_STARRED = "FROM_STARRED"
 class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
 
     private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
-//    private lateinit var skeleton: RecyclerViewSkeletonScreen
+    private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        popularList.adapter = personsAdapter
         registerObservers()
-        getData()
+        startLoading()
         // hide the back btn in the tool bar if not in stars screen
         if (!intent.getBooleanExtra(FROM_STARRED, false)){
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -45,26 +44,22 @@ class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
 
         // register the poll to refresh layout
         reloadData()
-
     }
 
     private fun registerObservers() {
         viewModel.popularPersons?.observe(this, Observer {
-            if (viewModel.apiHelper.currentPage <= 2 && it?.size?:0 > 0){
-                // skeleton.hide()
+            if (it.size != 0){
+                skeleton.hide()
             }
+            popularList.adapter = personsAdapter
             personsAdapter.submitList(it!!)
-
         })
     }
 
     @SuppressLint("ResourceType")
-    private fun getData() {
-        // start loading
-        /*skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
-        skeleton.show()*/
-//        viewModel.getData(intent.getBooleanExtra(FROM_STARRED, false))
-
+    private fun startLoading() {
+        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+        skeleton.show()
     }
 
     private fun reloadData() {
