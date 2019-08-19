@@ -3,6 +3,8 @@ package com.hazem.popularpeople.screens.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.abdularis.civ.AvatarImageView
 import com.hazem.popularpeople.R
@@ -11,23 +13,17 @@ import com.hazem.popularpeople.util.getImageUrl
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_person.view.*
 
-class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    private var persons = ArrayList<PopularPersons.PopularPerson>()
+class PopularListAdapter(var detailsNavigation: DetailsNavigation) : PagedListAdapter<PopularPersons.PopularPerson, RecyclerView.ViewHolder>(diffCallback){
 
-    fun insertPersons(popularPersons : List<PopularPersons.PopularPerson>){
-        persons.clear()
-        persons.addAll(popularPersons)
-        notifyDataSetChanged()
-    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_person, parent, false)
         return PopularPersonsViewHolder(view)
     }
 
-    override fun getItemCount(): Int  = persons.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PopularPersonsViewHolder).bindPerson(persons[position])
+        (holder as PopularPersonsViewHolder).bindPerson(getItem(position)!!)
     }
 
     inner class PopularPersonsViewHolder(var v:View):RecyclerView.ViewHolder(v){
@@ -69,6 +65,15 @@ class PopularListAdapter(var detailsNavigation: DetailsNavigation) : RecyclerVie
 
             v.setOnClickListener { detailsNavigation.navigateToDetails(person) }
             v.personImg.setOnClickListener { detailsNavigation.navigateToDetails(person) }
+        }
+    }
+    companion object {
+
+        private val diffCallback = object : DiffUtil.ItemCallback<PopularPersons.PopularPerson>() {
+            override fun areItemsTheSame(oldItem: PopularPersons.PopularPerson, newItem: PopularPersons.PopularPerson): Boolean =
+                oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: PopularPersons.PopularPerson, newItem: PopularPersons.PopularPerson): Boolean =
+                oldItem == newItem
         }
     }
 }
