@@ -1,14 +1,24 @@
 package com.hazem.popularpeople.core.ui
 
+import ae.government.tamm.components.shared.dialogs.SimpleErrorDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.network.ConnectivityReceiver
+import com.hazem.popularpeople.core.viewModel.BaseViewModel
+import com.hazem.popularpeople.di.components.AppComponent
+import com.hazem.popularpeople.di.components.DaggerAppComponent
 import com.tapadoo.alerter.Alerter
-import java.lang.Exception
+import javax.inject.Inject
 
-open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener  {
+open class BaseActivity<MBaseViewModel : BaseViewModel> : AppCompatActivity(), ConnectivityReceiver.ConnectivityReceiverListener{
 
+
+    @Inject
+    lateinit var viewModel: MBaseViewModel
+
+    var loadingAlter:Alerter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,16 +28,47 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
         // show the back btn in the tool bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        viewModel.loading.observe(this, Observer {
+            if (it) showLoading()
+            else hideLoading()
+        })
+
+        viewModel.error.observe(this, Observer {
+            hideLoading()
+            handleServerError(it)
+        })
     }
+
+    private fun hideLoading() {
+        /*loadingAlter?.apply {
+            Alerter.hide()
+        }*/
+    }
+
+    private fun showLoading() {
+        /*loadingAlter = Alerter.create(this).apply {
+            setText("loading")
+            setBackgroundColorRes(R.color.app_error_color)
+            enableInfiniteDuration(true)
+            enableProgress(true)
+            show()
+        }*/
+    }
+
 
     fun showInternetError() {
         showError(getString(R.string.app_internet_error))
     }
-    fun handleServerError(e:Exception){
-        // remove "java exception: " added by Exception class
-        showError(e.message?.replaceBefore(":","")
-            ?.replace(":","")
-            ?:getString(R.string.error))
+    fun handleServerError(e:String){
+        val dialog = SimpleErrorDialog().apply {
+            setUi(e, R.string.retry, act = {
+                dismiss()
+                viewModel.retry(e)
+            })
+        }
+
+        dialog.show(supportFragmentManager, "error_dialog")
     }
 
     private fun showError(errorMessage: String) {
@@ -35,6 +76,7 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
             setText(errorMessage)
             setBackgroundColorRes(R.color.app_error_color)
             show()
+
         }
     }
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
@@ -47,6 +89,7 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
         super.onDestroy()
         // unsubscribe from the connection
         ConnectivityReceiver.connectivityReceiverListener = null
+        viewModel.clearSubscription()
     }
 
     // handle the tool bar back btn clicked
@@ -54,4 +97,5 @@ open class BaseActivity : AppCompatActivity(), ConnectivityReceiver.Connectivity
         onBackPressed()
         return true
     }
+
 }

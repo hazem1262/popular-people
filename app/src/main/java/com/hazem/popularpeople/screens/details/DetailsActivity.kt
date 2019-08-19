@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hazem.popularpeople.screens.details.data.PersonImages
-import com.hazem.popularpeople.core.network.Resource
 import com.hazem.popularpeople.screens.home.PERSON_ID
 import com.hazem.popularpeople.screens.home.PERSON_NAME
 import com.hazem.popularpeople.screens.image.ImageFullDisplay
@@ -25,9 +24,8 @@ import kotlinx.android.synthetic.main.activity_details.refreshLayout
 const val PERSON_IMAGE_PATH = "PERSON_IMAGE_PATH"
 const val IMAGE_WIDTH       = "IMAGE_WIDTH"
 const val IMAGE_HEIGHT      = "IMAGE_HEIGHT"
-class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
+class DetailsActivity : BaseActivity<DetailsViewModel>(), ImageDisplayNavigation {
 
-    private lateinit var viewModel: DetailsViewModel
     private var detailsAdapter = DetailsListAdapter(this)
     private lateinit var skeleton: RecyclerViewSkeletonScreen
 
@@ -35,8 +33,6 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
         title = intent.getStringExtra(PERSON_NAME)
-        // initialize the view model
-        viewModel = ViewModelProviders.of(this).get(DetailsViewModel::class.java)
 
         // observe to the result from search or list data
         registerObservers()
@@ -56,20 +52,11 @@ class DetailsActivity : BaseActivity(), ImageDisplayNavigation {
     }
 
     private fun registerObservers(){
-        viewModel.images.observe(this, Observer {
-            if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }
+        viewModel.detailsList.observe(this, Observer {
+            skeleton.hide()
+            detailsList.adapter = detailsAdapter
+            detailsAdapter.insertDetails(viewModel.detailsList?.value!!)
         } )
-        viewModel.header.observe(this, Observer {
-            if (it?.status ==  Resource.Status.SUCCESS){
-                skeleton.hide()
-                detailsList.adapter = detailsAdapter
-                detailsAdapter.insertDetails(viewModel.detailsList)
-            }else if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }
-        })
     }
 
     @SuppressLint("ResourceType")

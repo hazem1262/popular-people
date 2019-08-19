@@ -9,5 +9,18 @@
     <color name="app_error_color">#b20000</color>
     <color name="app_black">#000000</color>
     <color name="accentSkeleton">#e6e6e6</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="accentTurquoiseBlue">#00abc5</color>
+    <color name="backgroundWhite">#ffffff</color>
+    <color name="accentBlueDarkSemiTransparent">#CC161138</color>
+    <color name="accentCyanSemiTransparent">#CC00ABC5</color>
+    <color name="accentBlueDark">#161138</color>
+    <color name="accentBlueGreen">#005971</color>
+    <color name="accentCyanLight">#E5F7FA</color>
+    <color name="accentYellowCanary">#ffdd00</color>
+    <color name="accentPeach">#EE907B</color>
+    <color name="accentRed">#d00000</color>
+
+
 
 </resources>

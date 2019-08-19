@@ -7,8 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.hazem.popularpeople.core.network.Resource
 import kotlinx.android.synthetic.main.activity_main.*
 import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
@@ -26,35 +24,46 @@ const val FROM_STARRED = "FROM_STARRED"
 * this activity will be responsible for display [List - Search - Star] people
 * intent.getBooleanExtra(FROM_STARRED) this check to know if it is from star btn
 * */
-class MainActivity : BaseActivity(), DetailsNavigation{
+class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
 
     private var personsAdapter : PopularListAdapter = PopularListAdapter(this)
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var skeleton: RecyclerViewSkeletonScreen
+//    private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // initialize the viewModel
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        // observe to the result from search or list data
+        popularList.adapter = personsAdapter
         registerObservers()
-
         getData()
-
-        // listen to scroll event and send new request when no scroll available
-        handleInfiniteResults()
-
         // hide the back btn in the tool bar if not in stars screen
         if (!intent.getBooleanExtra(FROM_STARRED, false)){
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }else {
             title = resources.getString(R.string.topRated)
+            viewModel.apiHelper.dataType = DataType.Star
         }
 
         // register the poll to refresh layout
         reloadData()
+
+    }
+
+    private fun registerObservers() {
+        viewModel.popularPersons?.observe(this, Observer {
+            if (viewModel.apiHelper.currentPage <= 2 && it?.size?:0 > 0){
+                // skeleton.hide()
+            }
+            personsAdapter.submitList(it!!)
+
+        })
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getData() {
+        // start loading
+        /*skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+        skeleton.show()*/
+//        viewModel.getData(intent.getBooleanExtra(FROM_STARRED, false))
 
     }
 
@@ -68,48 +77,6 @@ class MainActivity : BaseActivity(), DetailsNavigation{
         }
     }
 
-    private fun handleInfiniteResults() {
-        if (!intent.getBooleanExtra(FROM_STARRED, false)){
-            popularList.addOnScrollListener(
-                object : RecyclerView.OnScrollListener() {
-                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                        super.onScrollStateChanged(recyclerView, newState)
-                        // detect if cannot scroll vertically
-                        if (!recyclerView.canScrollVertically(1) && !viewModel.isScrollingBlocked) {
-                            viewModel.isScrollingBlocked = true
-                            viewModel.getData()
-                        }
-                    }
-                }
-            )
-        }
-    }
-
-    @SuppressLint("ResourceType")
-    private fun getData() {
-        // start loading
-        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
-        skeleton.show()
-        viewModel.getData(intent.getBooleanExtra(FROM_STARRED, false))
-    }
-
-    private fun registerObservers() {
-        viewModel.popularPersons?.observe(this, Observer {
-            if (viewModel.apiHelper.currentPage <= 2 && it.data?.size?:0 > 0){
-                skeleton.hide()
-                popularList.adapter = personsAdapter
-            }
-            if (it?.status == Resource.Status.SUCCESS ){
-                personsAdapter.insertPersons(it.data!!)
-            } else if (it?.status == Resource.Status.ERROR){
-                handleServerError(it?.exception!!)
-            }
-        })
-        if(intent.getBooleanExtra(FROM_STARRED, false)){
-            viewModel.topRatedMovies.observe(this, Observer {  })
-            viewModel.topRatedMovieCast.observe(this, Observer {  })
-        }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 //        do not show menu items in starred screen
@@ -121,7 +88,6 @@ class MainActivity : BaseActivity(), DetailsNavigation{
                 val intent = Intent(this, MainActivity::class.java).apply {
                     putExtra(FROM_STARRED, true)
                 }
-
                 startActivity(intent)
                 return@setOnMenuItemClickListener true
             }

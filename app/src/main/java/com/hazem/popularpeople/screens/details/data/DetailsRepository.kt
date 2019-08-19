@@ -1,13 +1,14 @@
 package com.hazem.popularpeople.screens.details.data
 
-import androidx.lifecycle.MutableLiveData
-import com.hazem.popularpeople.core.network.Resource
+import io.reactivex.Single
 
-class DetailsRepository {
-    fun getPersonImages(personId:Int) : MutableLiveData<Resource<PersonImages>>
+class DetailsRepository (var detailsApi:DetailsApiProvider){
+
+
+    fun getPersonImages(personId:Int) : Single<PersonImages>
     = detailsApi.getPersonImages(personId)
 
-    fun getPersonDetails(personId: Int) : MutableLiveData<Resource<PersonDetails>>
+    fun getPersonDetails(personId: Int) : Single<PersonDetails>
     = detailsApi.getPersonDetails(personId)
-    private val detailsApi by lazy { DetailsApiProvider() }
+
 }

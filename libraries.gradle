@@ -7,23 +7,41 @@ ext{
     skeletonVersion        = "1.1.0"     // Skeleton - version 1.1.1 has a bug with the width of the recycler view skeleton item!
     shimmerVersion         = "2.0.0"       // version 2.1.0 has a bug with the width of the recycler view skeleton item!
     dexter                 = "5.0.0"
-    alerterVersion = "4.0.0"
+    alerterVersion         = "4.0.0"
+    //dagger
+    daggerVersion          = "2.16"
+    //rx
+    rxRetrofitAdapter      = "2.5.0"
+    rxandroid              = "2.1.1"
+    rxjava                 = "2.2.8"
+    pagging                = "1.0.1"
 
     libraries = [
-            retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
-            retrofitConverter : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
-            retrofitAdapter   : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
-            recyclerView      : "androidx.recyclerview:recyclerview:${androidXSupportVersion}",
-            scalableDP        : "com.intuit.sdp:sdp-android:${scalableDPVersion}",
-            cardView          : "androidx.cardview:cardview:${androidXSupportVersion}",
-            circleImageView   : "com.github.abdularis:circularimageview:${circleImageViewVersion}",
-            picasso           : "com.squareup.picasso:picasso:${picassoVersion}",
-            skeleton          : "com.ethanhua:skeleton:${skeletonVersion}",
-            shimmer           : "io.supercharge:shimmerlayout:${shimmerVersion}",
-            dexter            : "com.karumi:dexter:${dexter}",
-            alerter          : "com.tapadoo.android:alerter:${alerterVersion}",
+            retrofit             : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitConverter    : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            retrofitAdapter      : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+            recyclerView         : "androidx.recyclerview:recyclerview:${androidXSupportVersion}",
+            scalableDP           : "com.intuit.sdp:sdp-android:${scalableDPVersion}",
+            cardView             : "androidx.cardview:cardview:${androidXSupportVersion}",
+            circleImageView      : "com.github.abdularis:circularimageview:${circleImageViewVersion}",
+            picasso              : "com.squareup.picasso:picasso:${picassoVersion}",
+            skeleton             : "com.ethanhua:skeleton:${skeletonVersion}",
+            shimmer              : "io.supercharge:shimmerlayout:${shimmerVersion}",
+            dexter               : "com.karumi:dexter:${dexter}",
+            alerter              : "com.tapadoo.android:alerter:${alerterVersion}",
+            dagger               : "com.google.dagger:dagger:${daggerVersion}",
+            daggerAndroid        : "com.google.dagger:dagger:${daggerVersion}",
+            daggerAndroidSupport : "com.google.dagger:dagger-android-support:${daggerVersion}",
+            rxJava               : "io.reactivex.rxjava2:rxjava:${rxjava}",
+            rxAndroid            : "io.reactivex.rxjava2:rxandroid:${rxandroid}",
+            rxRetrofitAdapter    : "com.squareup.retrofit2:adapter-rxjava2:${rxRetrofitAdapter}",
+            pagging              : "android.arch.paging:runtime:${pagging}"
 
 
+    ]
 
+    aptLibraries = [
+            daggerCompiler      : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            daggerProcessor     : "com.google.dagger:dagger-android-processor:${daggerVersion}",
     ]
 }
