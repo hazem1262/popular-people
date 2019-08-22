@@ -4,8 +4,9 @@ import androidx.annotation.MainThread
 import androidx.paging.PageKeyedDataSource
 import com.hazem.popularpeople.screens.home.HomeViewModel
 import io.reactivex.functions.Consumer
+import java.util.concurrent.Executor
 
-class PopularPersonDataSource(private val homeViewModel: HomeViewModel): PageKeyedDataSource<Int, PopularPersons.PopularPerson>() {
+class PopularPersonDataSource(private val homeViewModel: HomeViewModel, private val homeRepository:HomeRepository, private val retryExecutor: Executor): PageKeyedDataSource<Int, PopularPersons.PopularPerson>() {
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>

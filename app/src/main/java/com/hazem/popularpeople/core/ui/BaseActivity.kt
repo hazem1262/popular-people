@@ -57,10 +57,10 @@ open class BaseActivity<MBaseViewModel : BaseViewModel> : AppCompatActivity(), C
     }
 
 
-    fun showInternetError() {
+    private fun showInternetError() {
         showError(getString(R.string.app_internet_error))
     }
-    fun handleServerError(e:String){
+    private fun handleServerError(e:String){
         val dialog = SimpleErrorDialog().apply {
             setUi(e, R.string.retry, act = {
                 dismiss()
