@@ -1,12 +1,18 @@
 package com.hazem.popularpeople.screens.home.data
 
-import androidx.annotation.MainThread
 import androidx.paging.PageKeyedDataSource
 import com.hazem.popularpeople.screens.home.HomeViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
+import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.Executor
 
-class PopularPersonDataSource(private val homeViewModel: HomeViewModel, private val homeRepository:HomeRepository, private val retryExecutor: Executor): PageKeyedDataSource<Int, PopularPersons.PopularPerson>() {
+class PopularPersonDataSource(private val homeViewModel: HomeViewModel,
+                              private val homeRepository:HomeRepository,
+                              private val retryExecutor: Executor,
+                              private val apiHelper: NetworkHelper,
+                              private val compositeDisposable : CompositeDisposable): PageKeyedDataSource<Int, PopularPersons.PopularPerson>() {
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>
@@ -14,9 +20,9 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel, private 
         val currentPage = 1
         val nextPage = currentPage + 1
         when {
-            homeViewModel.apiHelper.dataType == DataType.Browse -> loadInitialPopularPersons(callback, nextPage)
-            homeViewModel.apiHelper.dataType == DataType.Search -> loadInitialSearchPopularPersons(callback, nextPage)
-            homeViewModel.apiHelper.dataType == DataType.Star -> loadInitialTopRated(callback, nextPage)
+            apiHelper.dataType == DataType.Browse -> loadInitialPopularPersons(callback, nextPage)
+            apiHelper.dataType == DataType.Search -> loadInitialSearchPopularPersons(callback, nextPage)
+            apiHelper.dataType == DataType.Star -> loadInitialTopRated(callback, nextPage)
         }
 
     }
@@ -25,9 +31,9 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel, private 
         val currentPage = params.key
         val nextPage = currentPage + 1
         when {
-            homeViewModel.apiHelper.dataType == DataType.Browse -> loadAfterPopularPersons(callback, nextPage)
-            homeViewModel.apiHelper.dataType == DataType.Search -> loadAfterSearchPopularPersons(callback, nextPage)
-            homeViewModel.apiHelper.dataType == DataType.Star   -> loadAfterTopRated(callback, nextPage)
+            apiHelper.dataType == DataType.Browse -> loadAfterPopularPersons(callback, currentPage)
+            apiHelper.dataType == DataType.Search -> loadAfterSearchPopularPersons(callback, currentPage)
+            apiHelper.dataType == DataType.Star   -> loadAfterTopRated(callback, currentPage)
         }
 
     }
@@ -36,16 +42,17 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel, private 
         callback: LoadCallback<Int, PopularPersons.PopularPerson>,
         nextPage: Int
     ) {
-        homeViewModel.subscribe(
-            homeViewModel.homeRepository.getPopularPersons(homeViewModel.apiHelper.currentPage++),
-            Consumer{
+        compositeDisposable.add(
+            homeRepository.getPopularPersons(nextPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    callback.onResult(it.results!!,  nextPage + 1)
+                },{
 
-                callback.onResult(it.results!!,  nextPage)
-            },
-            Consumer {
-                homeViewModel.apiHelper.currentPage--   //reduce the current page again
-            }
+                })
         )
+
     }
 
     private fun loadAfterSearchPopularPersons(
@@ -78,15 +85,16 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel, private 
 
 
     private fun loadInitialPopularPersons(callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>, nextPage:Int) {
-        homeViewModel.subscribe(
-            homeViewModel.homeRepository.getPopularPersons(homeViewModel.apiHelper.currentPage++),
-            Consumer{
-                homeViewModel.apiHelper.totalPages = it?.totalPages?:0
-                callback.onResult(it.results!!, null, nextPage)
-            },
-            Consumer {
-                homeViewModel.apiHelper.currentPage--   //reduce the current page again
-            }
+        compositeDisposable.add(
+            homeRepository.getPopularPersons(nextPage - 1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    apiHelper.totalPages = it?.totalPages?:0
+                    callback.onResult(it.results!!, null, nextPage)
+                },{
+
+                })
         )
     }
 

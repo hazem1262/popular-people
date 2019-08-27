@@ -22,7 +22,7 @@ abstract class BaseViewModel : ViewModel() {
     @Inject
     lateinit var context: Context
 
-    private val compositeDisposable = CompositeDisposable()
+    val compositeDisposable = CompositeDisposable()
     val error = MutableLiveData<String>()
     val loading = MutableLiveData<Boolean>()
     private var disposable: Disposable? = null

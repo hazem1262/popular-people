@@ -12,12 +12,12 @@ import io.reactivex.Single
 import io.reactivex.functions.Consumer
 import io.reactivex.functions.Function
 import java.lang.Exception
+import java.util.concurrent.Executor
 import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(): BaseViewModel() {
+class HomeViewModel @Inject constructor(var  homeRepository:HomeRepository): BaseViewModel() {
 
-    @Inject
-    lateinit var  homeRepository:HomeRepository
+
     // save the request state [currentPage - totalPages - searchQuery ...]
     var apiHelper = NetworkHelper()
     // popular persons live data will be used to handle listing and searching for people
@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
     // save the network state to check before send requests when scrolling
     var isConnected = true
 
-    private val popularPersonsDataSourceFactory: PopularPersonsDataSourceFactory = PopularPersonsDataSourceFactory(this)
+    var popularPersonsDataSourceFactory: PopularPersonsDataSourceFactory
 
     init {
         val config = PagedList.Config.Builder()
@@ -38,6 +38,12 @@ class HomeViewModel @Inject constructor(): BaseViewModel() {
             .setInitialLoadSizeHint(PAGE_SIZE)
             .setEnablePlaceholders(false)
             .build()
+
+        popularPersonsDataSourceFactory = PopularPersonsDataSourceFactory(this,
+            apiHelper = apiHelper,
+            compositeDisposable = compositeDisposable,
+            homeRepository = homeRepository,
+            retryExecutor = Executor {  })
         popularPersons = LivePagedListBuilder(popularPersonsDataSourceFactory, config).build()
     }
 
