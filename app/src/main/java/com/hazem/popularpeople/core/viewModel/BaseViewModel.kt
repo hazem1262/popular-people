@@ -17,7 +17,7 @@ import io.reactivex.subjects.PublishSubject
 import org.reactivestreams.Publisher
 
 
-abstract class BaseViewModel : ViewModel() {
+open class BaseViewModel : ViewModel() {
 
     @Inject
     lateinit var context: Context
@@ -99,9 +99,12 @@ abstract class BaseViewModel : ViewModel() {
         if (compositeDisposable.isDisposed.not()) compositeDisposable.clear()
         disposable?.dispose()
     }
-    fun retry(msg:String) {
+    open fun retry(msg:String) {
         retrySubject.onNext(1)
     }
 }
 
 const val NO_NETWORK_AVAILABLE = "no network available"
+enum class State{
+    LOADING, ERROR, LOADING_MORE, DONE
+}

@@ -1,6 +1,5 @@
 package com.hazem.popularpeople.screens.home
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -8,7 +7,6 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_main.*
-import androidx.recyclerview.widget.RecyclerView
 import com.ethanhua.skeleton.RecyclerViewSkeletonScreen
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.ui.BaseActivity
@@ -33,7 +31,6 @@ class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         registerObservers()
-        startLoading()
         // hide the back btn in the tool bar if not in stars screen
         if (!intent.getBooleanExtra(FROM_STARRED, false)){
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -47,20 +44,12 @@ class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
     }
 
     private fun registerObservers() {
-        viewModel.popularPersons?.observe(this, Observer {
-            if (it.size != 0){
-                skeleton.hide()
-            }
+        viewModel.liveData?.observe(this, Observer {
             popularList.adapter = personsAdapter
             personsAdapter.submitList(it!!)
         })
     }
 
-    @SuppressLint("ResourceType")
-    private fun startLoading() {
-        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
-        skeleton.show()
-    }
 
     private fun reloadData() {
         refreshLayout.setOnRefreshListener {
@@ -124,6 +113,15 @@ class MainActivity : BaseActivity<HomeViewModel>(), DetailsNavigation{
         return true
     }
 
+    override fun showLoading() {
+        skeleton = popularList.showSkeleton(R.layout.skeleton_card_home, R.color.white, 10)
+        skeleton.show()
+    }
+
+    override fun hideLoading() {
+        skeleton.hide()
+        popularList.adapter = personsAdapter
+    }
     override fun navigateToDetails(person: PopularPersons.PopularPerson){
         val intent = Intent(this, DetailsActivity::class.java).apply {
             putExtra(PERSON_ID, person.id)

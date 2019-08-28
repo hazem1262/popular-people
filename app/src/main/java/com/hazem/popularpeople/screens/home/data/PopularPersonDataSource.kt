@@ -1,72 +1,78 @@
 package com.hazem.popularpeople.screens.home.data
 
-import androidx.paging.PageKeyedDataSource
-import com.hazem.popularpeople.screens.home.HomeViewModel
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.hazem.popularpeople.core.dataSource.BaseDataSource
+import com.hazem.popularpeople.core.viewModel.State
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.Executor
 
-class PopularPersonDataSource(private val homeViewModel: HomeViewModel,
+class PopularPersonDataSource(
                               private val homeRepository:HomeRepository,
-                              private val retryExecutor: Executor,
                               private val apiHelper: NetworkHelper,
-                              private val compositeDisposable : CompositeDisposable): PageKeyedDataSource<Int, PopularPersons.PopularPerson>() {
+                              compositeDisposable : CompositeDisposable) : BaseDataSource<Int, PopularPersons.PopularPerson>(compositeDisposable) {
+
+    private var totalNumberOfMovies  = 20   // just initial value and it is refilled from api response
+    var topRatedMap: HashMap<CastingResponse.Cast, Int> = HashMap()
+    var initialNumberOfMovies = 0
+
+
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>
     ) {
-        val currentPage = 1
-        val nextPage = currentPage + 1
+
+        networkState.postValue(State.LOADING)
         when {
-            apiHelper.dataType == DataType.Browse -> loadInitialPopularPersons(callback, nextPage)
-            apiHelper.dataType == DataType.Search -> loadInitialSearchPopularPersons(callback, nextPage)
-            apiHelper.dataType == DataType.Star -> loadInitialTopRated(callback, nextPage)
+            apiHelper.dataType == DataType.Browse -> loadInitialPopularPersons(params, callback)
+            apiHelper.dataType == DataType.Search -> loadInitialSearchPopularPersons(params, callback)
+            apiHelper.dataType == DataType.Star -> loadInitialTopRated(params, callback)
         }
 
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, PopularPersons.PopularPerson>) {
         val currentPage = params.key
-        val nextPage = currentPage + 1
+        networkState.postValue(State.LOADING_MORE)
         when {
-            apiHelper.dataType == DataType.Browse -> loadAfterPopularPersons(callback, currentPage)
-            apiHelper.dataType == DataType.Search -> loadAfterSearchPopularPersons(callback, currentPage)
-            apiHelper.dataType == DataType.Star   -> loadAfterTopRated(callback, currentPage)
+            apiHelper.dataType == DataType.Browse -> loadAfterPopularPersons(params, callback)
+            apiHelper.dataType == DataType.Search -> loadAfterSearchPopularPersons(params, callback)
+            apiHelper.dataType == DataType.Star   -> loadAfterTopRated(params, callback)
         }
 
     }
 
     private fun loadAfterPopularPersons(
-        callback: LoadCallback<Int, PopularPersons.PopularPerson>,
-        nextPage: Int
+        params: LoadParams<Int>,
+        callback: LoadCallback<Int, PopularPersons.PopularPerson>
     ) {
-        compositeDisposable.add(
-            homeRepository.getPopularPersons(nextPage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    callback.onResult(it.results!!,  nextPage + 1)
-                },{
-
-                })
+        subscribe(
+            homeRepository.getPopularPersons(params.key),
+            Consumer {
+                callback.onResult(it.results!!,  params.key + 1)
+                networkState.postValue(State.DONE)
+            },
+            Consumer {
+                retry = {
+                    loadAfter(params, callback)
+                }
+            }
         )
 
     }
 
     private fun loadAfterSearchPopularPersons(
-        callback: LoadCallback<Int, PopularPersons.PopularPerson>,
-        nextPage: Int
+        params: LoadParams<Int>,
+        callback: LoadCallback<Int, PopularPersons.PopularPerson>
     ) {
-        homeViewModel.subscribe(
-            homeViewModel.homeRepository.searchPopularPersons(homeViewModel.apiHelper.currentPage++, homeViewModel.apiHelper.searchQuery),
-            Consumer{
-
-                callback.onResult(it.results!!,  nextPage)
+        subscribe(
+            homeRepository.searchPopularPersons(params.key, apiHelper.searchQuery),
+            Consumer {
+                callback.onResult(it.results!!,  params.key + 1)
+                networkState.postValue(State.DONE)
             },
             Consumer {
-                homeViewModel.apiHelper.currentPage--   //reduce the current page again
+                retry = {
+                    loadAfter(params, callback)
+                }
             }
         )
     }
@@ -74,8 +80,8 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel,
 
 
     private fun loadAfterTopRated(
-        callback: LoadCallback<Int, PopularPersons.PopularPerson>,
-        nextPage: Int
+        params: LoadParams<Int>,
+        callback: LoadCallback<Int, PopularPersons.PopularPerson>
     ) {
 
     }
@@ -84,61 +90,63 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel,
     }
 
 
-    private fun loadInitialPopularPersons(callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>, nextPage:Int) {
-        compositeDisposable.add(
-            homeRepository.getPopularPersons(nextPage - 1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    apiHelper.totalPages = it?.totalPages?:0
-                    callback.onResult(it.results!!, null, nextPage)
-                },{
-
-                })
+    private fun loadInitialPopularPersons(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>) {
+        subscribe(
+            homeRepository.getPopularPersons(1),
+            Consumer {
+                apiHelper.totalPages = it?.totalPages?:0
+                callback.onResult(it.results!!, null, 2)
+                networkState.postValue(State.DONE)
+            },
+            Consumer {  }
         )
     }
 
     private fun loadInitialSearchPopularPersons(
-        callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>,
-        nextPage: Int
+        params: LoadInitialParams<Int>,
+        callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>
     ) {
-        homeViewModel.subscribe(
-            homeViewModel.homeRepository.searchPopularPersons(homeViewModel.apiHelper.currentPage++, homeViewModel.apiHelper.searchQuery),
+        subscribe(
+            homeRepository.searchPopularPersons(1, apiHelper.searchQuery),
             Consumer {
-                homeViewModel.apiHelper.isSearchStarted = true   // this check to handle not to reset browse observable until search start
+                apiHelper.isSearchStarted = true   // this check to handle not to reset browse observable until search start
                 // handle if first page [popularPersons?.value need to be initialized]or not
-                homeViewModel.apiHelper.totalPages = it?.totalPages?:0
-                callback.onResult(it.results!!, null, nextPage)
+                apiHelper.totalPages = it?.totalPages?:0
+                callback.onResult(it.results!!, null, 2)
+                networkState.postValue(State.DONE)
             },
             Consumer {
-                homeViewModel.apiHelper.currentPage--   //reduce the current page again
+                retry = {
+                    loadInitial(params, callback)
+                }
             }
         )
     }
 
     private fun loadInitialTopRated(
-        callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>,
-        nextPage: Int
+        params: LoadInitialParams<Int>,
+        callback: LoadInitialCallback<Int, PopularPersons.PopularPerson>
     ) {
-        homeViewModel.subscribe(
-            homeViewModel.homeRepository.getTopRatedMovies(),
+
+        subscribe(
+            homeRepository.getTopRatedMovies(),
             Consumer {
-                homeViewModel.totalNumberOfMovies = it?.results?.size?:0
-//                var moviesCast: ArrayList<Single<CastingResponse>>  = arrayListOf()
+                totalNumberOfMovies = it?.results?.size?:0
                 it?.results?.forEach{ it ->
-                    homeViewModel.subscribe(
-                        homeViewModel.homeRepository.getMovieCast(it?.id.toString()),
-                        Consumer { response ->
+                    subscribe(
+                        homeRepository.getMovieCast(it?.id.toString()),
+                        Consumer {
+                                response ->
                             response?.cast?.forEach { cast ->
-                                if (homeViewModel.topRatedMap.containsKey(cast)){
-                                    homeViewModel.topRatedMap[cast!!] = homeViewModel.topRatedMap[cast!!]!! + 1
+                                if (topRatedMap.containsKey(cast)){
+                                    topRatedMap[cast!!] = topRatedMap[cast!!]!! + 1
                                 }else {
-                                    homeViewModel.topRatedMap[cast!!] = 1
+                                    topRatedMap[cast!!] = 1
                                 }
                             }
-                            homeViewModel.initialNumberOfMovies++
-                            if (homeViewModel.initialNumberOfMovies == homeViewModel.totalNumberOfMovies){
-                                val mapToPopularPersons = homeViewModel.topRatedMap.filter { entry ->
+                            initialNumberOfMovies++
+                            if (initialNumberOfMovies == totalNumberOfMovies){
+                                val mapToPopularPersons = topRatedMap.filter { entry ->
                                     entry.value > 1
                                 }.keys.toMutableList().map { cast ->
                                     PopularPersons.PopularPerson(
@@ -146,14 +154,19 @@ class PopularPersonDataSource(private val homeViewModel: HomeViewModel,
                                         profilePath = cast.profilePath,
                                         name = cast.name)
                                 }.toMutableList()
-                                callback.onResult(mapToPopularPersons, null, nextPage)
+                                callback.onResult(mapToPopularPersons, null, 2)
+                                networkState.postValue(State.DONE)
                             }
                         },
                         Consumer {  }
                     )
                 }
             },
-            Consumer {  }
+            Consumer {
+                retry = {
+                    loadInitial(params, callback)
+                }
+            }
         )
     }
 

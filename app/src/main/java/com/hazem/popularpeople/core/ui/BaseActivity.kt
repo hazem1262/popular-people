@@ -7,8 +7,6 @@ import androidx.lifecycle.Observer
 import com.hazem.popularpeople.R
 import com.hazem.popularpeople.core.network.ConnectivityReceiver
 import com.hazem.popularpeople.core.viewModel.BaseViewModel
-import com.hazem.popularpeople.di.components.AppComponent
-import com.hazem.popularpeople.di.components.DaggerAppComponent
 import com.tapadoo.alerter.Alerter
 import javax.inject.Inject
 
@@ -40,20 +38,20 @@ open class BaseActivity<MBaseViewModel : BaseViewModel> : AppCompatActivity(), C
         })
     }
 
-    private fun hideLoading() {
-        /*loadingAlter?.apply {
+    open fun hideLoading() {
+        loadingAlter?.apply {
             Alerter.hide()
-        }*/
+        }
     }
 
-    private fun showLoading() {
-        /*loadingAlter = Alerter.create(this).apply {
+    open fun showLoading() {
+        loadingAlter = Alerter.create(this).apply {
             setText("loading")
             setBackgroundColorRes(R.color.app_error_color)
             enableInfiniteDuration(true)
             enableProgress(true)
             show()
-        }*/
+        }
     }
 
 
