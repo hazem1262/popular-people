@@ -8,13 +8,10 @@ import com.hazem.popularpeople.core.network.RetrofitException
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import io.reactivex.subjects.PublishSubject
-import org.reactivestreams.Publisher
 
 
 open class BaseViewModel : ViewModel() {
@@ -25,7 +22,6 @@ open class BaseViewModel : ViewModel() {
     val compositeDisposable = CompositeDisposable()
     val error = MutableLiveData<String>()
     val loading = MutableLiveData<Boolean>()
-    private var disposable: Disposable? = null
     private val retrySubject = PublishSubject.create<Any>()
 
     private fun getRetrofitError(exception: Throwable) {
@@ -92,19 +88,16 @@ open class BaseViewModel : ViewModel() {
                 .doAfterTerminate {
                     loading.postValue(false)
                 }
-                .doAfterSuccess { disposable = null }
     }
 
     fun clearSubscription() {
         if (compositeDisposable.isDisposed.not()) compositeDisposable.clear()
-        disposable?.dispose()
     }
     open fun retry(msg:String) {
         retrySubject.onNext(1)
     }
 }
 
-const val NO_NETWORK_AVAILABLE = "no network available"
 enum class State{
     LOADING, ERROR, LOADING_MORE, DONE
 }

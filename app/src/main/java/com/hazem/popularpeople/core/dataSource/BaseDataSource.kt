@@ -29,9 +29,14 @@ abstract class BaseDataSource<Key, Value>(private val compositeDisposable : Comp
             observable
                 .subscribeOn(subscribeScheduler)
                 .observeOn(observerScheduler)
+                .doOnError {
+                    networkState.postValue(State.ERROR)
+                }
                 .subscribe(success, requestError)
         )
     }
+
+
 
     fun retryPaging(){
         retry?.let { it() }

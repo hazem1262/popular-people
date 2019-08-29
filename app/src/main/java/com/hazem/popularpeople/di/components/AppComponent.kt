@@ -1,6 +1,5 @@
 package com.hazem.popularpeople.di.components
 
-import android.app.Application
 import android.content.Context
 import com.hazem.popularpeople.core.PopularPeopleApplication
 import com.hazem.popularpeople.di.modules.*

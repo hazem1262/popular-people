@@ -6,7 +6,7 @@ import android.net.NetworkInfo
 import okhttp3.Cache
 
 class RetrofitCashHelper(var context:Context) {
-    val cacheSize = (5 * 1024 * 1024).toLong()      // limit the cache size to 5MB
+    private val cacheSize = (5 * 1024 * 1024).toLong()      // limit the cache size to 5MB
     val myCache = Cache(context.cacheDir, cacheSize)
 
     fun hasNetwork(): Boolean? {

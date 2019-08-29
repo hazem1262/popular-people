@@ -16,26 +16,6 @@ class HomeViewModel @Inject constructor( homeRepository:HomeRepository): PagedVi
     var isConnected = true
     var popularPersonsDataSourceFactory: PopularPersonsDataSourceFactory
 
-    /*init {
-        val config = PagedList.Config.Builder()
-            .setPageSize(PAGE_SIZE)
-            .setInitialLoadSizeHint(PAGE_SIZE)
-            .setEnablePlaceholders(false)
-            .build()
-
-        popularPersonsDataSourceFactory = PopularPersonsDataSourceFactory(
-            apiHelper = apiHelper,
-            compositeDisposable = compositeDisposable,
-            homeRepository = homeRepository)
-        popularPersons = LivePagedListBuilder(popularPersonsDataSourceFactory, config).build()
-
-        popularPersonsDataSourceFactory.popularPersonDataSource.networkState.observeForever {
-            when(it){
-                State.LOADING -> loading.postValue(true)
-                State.DONE -> loading.postValue(false)
-            }
-        }
-    }*/
     init {
         popularPersonsDataSourceFactory = PopularPersonsDataSourceFactory(
             apiHelper = apiHelper,

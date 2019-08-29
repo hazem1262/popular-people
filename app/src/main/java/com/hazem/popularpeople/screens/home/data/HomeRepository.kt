@@ -1,9 +1,6 @@
 package com.hazem.popularpeople.screens.home.data
 
-import androidx.lifecycle.MutableLiveData
-import com.hazem.popularpeople.core.network.Resource
 import io.reactivex.Single
-import javax.inject.Inject
 
 class HomeRepository(var homeApi:HomeApiProvider) {
 

@@ -30,7 +30,6 @@ class PopularPersonDataSource(
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, PopularPersons.PopularPerson>) {
-        val currentPage = params.key
         networkState.postValue(State.LOADING_MORE)
         when {
             apiHelper.dataType == DataType.Browse -> loadAfterPopularPersons(params, callback)
@@ -98,7 +97,11 @@ class PopularPersonDataSource(
                 callback.onResult(it.results!!, null, 2)
                 networkState.postValue(State.DONE)
             },
-            Consumer {  }
+            Consumer {
+                retry = {
+                    loadInitial(params, callback)
+                }
+            }
         )
     }
 

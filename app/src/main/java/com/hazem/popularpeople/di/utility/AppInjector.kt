@@ -26,7 +26,6 @@ import com.hazem.popularpeople.core.PopularPeopleApplication
 import com.hazem.popularpeople.di.components.AppComponent
 import com.hazem.popularpeople.di.components.DaggerAppComponent
 import dagger.android.AndroidInjection
-import dagger.android.support.AndroidSupportInjection
 
 /**
  * Helper class to automatically inject fragments if they implement [Injectable].
